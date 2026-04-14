@@ -1,3 +1,5 @@
 erddapData/*
 .idea
 
+datasets/
+*.nc

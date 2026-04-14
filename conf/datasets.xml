@@ -3,15 +3,15 @@
 <!-- GENERAL INFORMATION
 The information in this file specifies which datasets your ERDDAP will serve.
 The initial version of this file has a few examples which should work for you.
-But after your initial experiments with ERDDAP, 
+But after your initial experiments with ERDDAP, 
 you should replace them with information for your datasets.
 
-You can change this document (e.g., add datasets, change metadata) while ERDDAP is running. 
+You can change this document (e.g., add datasets, change metadata) while ERDDAP is running. 
 The changes will be detected the next time this document is read
 (as often as loadDatasetsMinMinutes).
 
 Each dataset has a reloadEveryNMinutes value (default = 10080 (one week)).
-When this document is reread, datasets that haven't been been reloaded in 
+When this document is reread, datasets that haven't been been reloaded in 
 their reloadEveryNMinutes will be reloaded.
 You only need to specify a reloadEveryNMinutes value if you anticipate that
 the dataset will change periodically.
@@ -19,40 +19,40 @@ the dataset will change periodically.
 If this document has an xml error, processing will stop and an email
 will be sent to emailEverythingTo as specified in setup.xml.
 
-If you want to remove a dataset while ERDDAP is running, add 
-    active="false"
-to the dataset tag.  For example,
-    <dataset type="EDDGridFromDap" datasetID="erdMHchla8day" active="false">
+If you want to remove a dataset while ERDDAP is running, add 
+    active="false"
+to the dataset tag.  For example,
+    <dataset type="EDDGridFromDap" datasetID="erdMHchla8day" active="false">
 
-For more information, see 
+For more information, see 
 https://erddap.github.io/docs/server-admin/datasets
 -->
 
 <!-- The tags below are described in https://erddap.github.io/docs/server-admin/datasets.
-     The defaults listed below are as of ERDDAP v2.00. -->
-<cacheMinutes></cacheMinutes>                                     <!-- default=60 --> 
-<cacheClearMinutes></cacheClearMinutes>                           <!-- default=15 --> 
-<decompressedCacheMaxGB></decompressedCacheMaxGB>                 <!-- default=10 --> 
-<decompressedCacheMaxMinutesOld></decompressedCacheMaxMinutesOld> <!-- default=15 --> 
-<drawLandMask></drawLandMask>                                     <!-- "over", "under" (default), "outline", or "off" -->
-<emailDiagnosticsToErdData></emailDiagnosticsToErdData>           <!-- "true (default) or "false" -->
-<graphBackgroundColor></graphBackgroundColor>                     <!-- 0xAARRGGBB, default is 0xffccccff -->
-<ipAddressMaxRequests></ipAddressMaxRequests>                     <!-- current default=7 -->
-<ipAddressMaxRequestsActive></ipAddressMaxRequestsActive>         <!-- current default=2 -->
-<ipAddressUnlimited></ipAddressUnlimited>                         <!-- default=(empty) -->
-<loadDatasetsMinMinutes></loadDatasetsMinMinutes>                 <!-- usually=default=15 -->
-<loadDatasetsMaxMinutes></loadDatasetsMaxMinutes>                 <!-- default=60 -->
+     The defaults listed below are as of ERDDAP v2.00. -->
+<cacheMinutes></cacheMinutes>                                     <!-- default=60 --> 
+<cacheClearMinutes></cacheClearMinutes>                           <!-- default=15 --> 
+<decompressedCacheMaxGB></decompressedCacheMaxGB>                 <!-- default=10 --> 
+<decompressedCacheMaxMinutesOld></decompressedCacheMaxMinutesOld> <!-- default=15 --> 
+<drawLandMask></drawLandMask>                                     <!-- "over", "under" (default), "outline", or "off" -->
+<emailDiagnosticsToErdData></emailDiagnosticsToErdData>           <!-- "true (default) or "false" -->
+<graphBackgroundColor></graphBackgroundColor>                     <!-- 0xAARRGGBB, default is 0xffccccff -->
+<ipAddressMaxRequests></ipAddressMaxRequests>                     <!-- current default=7 -->
+<ipAddressMaxRequestsActive></ipAddressMaxRequestsActive>         <!-- current default=2 -->
+<ipAddressUnlimited></ipAddressUnlimited>                         <!-- default=(empty) -->
+<loadDatasetsMinMinutes>0</loadDatasetsMinMinutes>                 <!-- usually=default=15 -->
+<loadDatasetsMaxMinutes></loadDatasetsMaxMinutes>                 <!-- default=60 -->
 <logLevel></logLevel> <!-- "warning" (fewest messages), "info" (default), or "all" (most messages) -->
-<nGridThreads></nGridThreads>                                     <!-- default=1 -->
-<nTableThreads></nTableThreads>                                   <!-- default=1 -->
-<partialRequestMaxBytes></partialRequestMaxBytes>                 <!-- default=490000000 -->
-<partialRequestMaxCells></partialRequestMaxCells>                 <!-- default=10000000 -->
-<slowDownTroubleMillis></slowDownTroubleMillis>                   <!-- default=1000 -->
-<unusualActivity></unusualActivity>                               <!-- default=10000 -->
-<updateMaxEvents></updateMaxEvents>                               <!-- default=10 -->
-<unusualActivityFailPercent>25</unusualActivityFailPercent>       <!-- default=25 -->
+<nGridThreads></nGridThreads>                                     <!-- default=1 -->
+<nTableThreads></nTableThreads>                                   <!-- default=1 -->
+<partialRequestMaxBytes></partialRequestMaxBytes>                 <!-- default=490000000 -->
+<partialRequestMaxCells></partialRequestMaxCells>                 <!-- default=10000000 -->
+<slowDownTroubleMillis></slowDownTroubleMillis>                   <!-- default=1000 -->
+<unusualActivity></unusualActivity>                               <!-- default=10000 -->
+<updateMaxEvents></updateMaxEvents>                               <!-- default=10 -->
+<unusualActivityFailPercent>25</unusualActivityFailPercent>       <!-- default=25 -->
 <!-- The defaults for the following tags are in messages.xml. -->
-<startHeadHtml5></startHeadHtml5>                                
+<startHeadHtml5></startHeadHtml5>                                
 <endBodyHtml5></endBodyHtml5>
 <standardLicense></standardLicense>
 <standardContact></standardContact>
@@ -67,38 +67,38 @@ https://erddap.github.io/docs/server-admin/datasets
 <br>&nbsp;
 <hr>
 <h2><a class="selfLink" id="privacyPolicy" href="#privacyPolicy" rel="help">Privacy Policy</a></h2>
-ERDDAP follows 
+ERDDAP follows 
 <a rel="bookmark" href="https://www.noaa.gov/protecting-your-privacy"
-  >NOAA's Privacy Policy Guidelines</a>.
+  >NOAA's Privacy Policy Guidelines</a>.
 ]]></standardPrivacyPolicy>
 
 <startBodyHtml5><![CDATA[
 <body>
 <table class="compact nowrap" style="width:100%; background-color:#128CB5;">
-  <tr> 
-    <td style="text-align:center; width:80px;"><a rel="bookmark"
-      href="https://emso.eu/"><img
-      title="EMSO"
-      src="&erddapUrl;/images/custom_logo.png" alt="YOUR LOGO" height="120" width="120"
-      style="vertical-align:middle;"></a></td> 
-    <td style="text-align:left; font-size:x-large; color:#FFFFFF; ">
-      <strong>ERDDAP</strong>
-      <br><small><small><small>&EasierAccessToScientificData;</small></small></small>
-      </td> 
-    <td style="text-align:right; font-size:small;"> 
-      &loginInfo; | &language; &nbsp; &nbsp;
-      <br>&BroughtToYouBy; 
-      <a title="EMSO"
-      href="https://emso.eu/">EMSO</a>
-      <a title="Universitat Politècnica de Catalunya" rel="bookmark"
-      href="https://www.upce.du">UPC</a>
-      &nbsp; &nbsp;
-      </td> 
-  </tr> 
+  <tr> 
+    <td style="text-align:center; width:80px;"><a rel="bookmark"
+      href="https://emso.eu/"><img
+      title="EMSO"
+      src="&erddapUrl;/images/custom_logo.png" alt="YOUR LOGO" height="120" width="120"
+      style="vertical-align:middle;"></a></td> 
+    <td style="text-align:left; font-size:x-large; color:#FFFFFF; ">
+      <strong>ERDDAP</strong>
+      <br><small><small><small>&EasierAccessToScientificData;</small></small></small>
+      </td> 
+    <td style="text-align:right; font-size:small;"> 
+      &loginInfo; | &language; &nbsp; &nbsp;
+      <br>&BroughtToYouBy; 
+      <a title="EMSO"
+      href="https://emso.eu/">EMSO</a>
+      <a title="Universitat Politècnica de Catalunya" rel="bookmark"
+      href="https://www.upce.du">UPC</a>
+      &nbsp; &nbsp;
+      </td> 
+  </tr> 
 </table>
 ]]></startBodyHtml5>
 
-<theShortDescriptionHtml><![CDATA[ 
+<theShortDescriptionHtml><![CDATA[ 
 <h1>ERDDAP</h1>
 &erddapIs;
 &thisParticularErddap;
@@ -107,94 +107,177 @@ ERDDAP follows
 
 
 <!-- If you want to refuse requests from certain clients
-  (e.g., to fend off a Denial of Service attack or an overly zealous web robot), 
-  add their numeric IP address (e.g., 123.45.67.89) to this comma-separated list. 
-  You can also replace the last number in an IP address with * to block 0-255 (e.g., 123.45.67.*).
-  See your ERDDAP daily report for a list/tally of the most active requesters. -->
+  (e.g., to fend off a Denial of Service attack or an overly zealous web robot), 
+  add their numeric IP address (e.g., 123.45.67.89) to this comma-separated list. 
+  You can also replace the last number in an IP address with * to block 0-255 (e.g., 123.45.67.*).
+  See your ERDDAP daily report for a list/tally of the most active requesters. -->
 <requestBlacklist></requestBlacklist>
 
 
 <!-- If you want to prevent specific people from using the email/URL subscription
-     system, add their email addresses to this comma-separated list. 
-     You can use the name "*" to blacklist an entire domain, e.g., *@example.com .
+     system, add their email addresses to this comma-separated list. 
+     You can use the name "*" to blacklist an entire domain, e.g., *@example.com .
 -->
 <subscriptionEmailBlacklist>your.email@yourinstitution.edu, some.name@company.com,
 another.name@company.com, *@example.com</subscriptionEmailBlacklist>
 
 
 <dataset type="EDDTableFromMultidimNcFiles" datasetID="DummyData" active="true">
-  <reloadEveryNMinutes>10080</reloadEveryNMinutes>
-  <updateEveryNMillis>10000</updateEveryNMillis>
-  <fileDir>/datasets/DummyData</fileDir>
-  <fileNameRegex>.*</fileNameRegex>
-  <recursive>true</recursive>
-  <pathRegex>.*</pathRegex>
-  <metadataFrom>last</metadataFrom>
-  <standardizeWhat>0</standardizeWhat>
-  <removeMVRows>true</removeMVRows>
-  <sortFilesBySourceNames/>
-  <fileTableInMemory>false</fileTableInMemory>
-  <addAttributes>
-    <att name="_NCProperties">null</att>
-    <att name="cdm_data_type">Point</att>
-    <att name="infoUrl">https://edmo.seadatanet.org/report/2150</att>
-    <att name="sourceUrl">(local files)</att>
-    <att name="standard_name_vocabulary">CF Standard Name Table v70</att>
-    <att name="subsetVariables">latitude_QC, longitude_QC</att>
-  </addAttributes>
-  <dataVariable>
-    <sourceName>TIME</sourceName>
-    <destinationName>time</destinationName>
-    <dataType>double</dataType>
+  <reloadEveryNMinutes>10080</reloadEveryNMinutes>
+  <updateEveryNMillis>10000</updateEveryNMillis>
+  <fileDir>/datasets/DummyData</fileDir>
+  <fileNameRegex>.*</fileNameRegex>
+  <recursive>true</recursive>
+  <pathRegex>.*</pathRegex>
+  <metadataFrom>last</metadataFrom>
+  <standardizeWhat>0</standardizeWhat>
+  <removeMVRows>true</removeMVRows>
+  <sortFilesBySourceNames/>
+  <fileTableInMemory>false</fileTableInMemory>
+  <addAttributes>
+    <att name="_NCProperties">null</att>
+    <att name="cdm_data_type">Point</att>
+    <att name="infoUrl">https://edmo.seadatanet.org/report/2150</att>
+    <att name="sourceUrl">(local files)</att>
+    <att name="standard_name_vocabulary">CF Standard Name Table v70</att>
+    <att name="subsetVariables">latitude_QC, longitude_QC</att>
+  </addAttributes>
+  <dataVariable>
+    <sourceName>TIME</sourceName>
+    <destinationName>time</destinationName>
+    <dataType>double</dataType>
+    <addAttributes>
+      <att name="units">seconds since 1970-01-01</att>
+      <att name="time_precision">1970-01-01T00:00:00Z</att>
+    </addAttributes>
+  </dataVariable>
+  <dataVariable>
+    <sourceName>LATITUDE</sourceName>
+    <destinationName>latitude</destinationName>
+    <dataType>float</dataType>
+    <addAttributes/>
+  </dataVariable>
+  <dataVariable>
+    <sourceName>LONGITUDE</sourceName>
+    <destinationName>longitude</destinationName>
+    <dataType>float</dataType>
+    <addAttributes/>
+  </dataVariable>
+  <dataVariable>
+    <sourceName>DEPTH</sourceName>
+    <destinationName>depth</destinationName>
+    <dataType>float</dataType>
+    <addAttributes>
+      <att name="units">m</att>
+    </addAttributes>
+  </dataVariable>
+  <dataVariable>
+    <sourceName>TEMP</sourceName>
+    <destinationName>TEMP</destinationName>
+    <dataType>float</dataType>
+    <addAttributes/>
+  </dataVariable>
+  <dataVariable>
+    <sourceName>CNDC</sourceName>
+    <destinationName>CNDC</destinationName>
+    <dataType>float</dataType>
+    <addAttributes/>
+  </dataVariable>
+  <dataVariable>
+    <sourceName>LATITUDE_QC</sourceName>
+    <destinationName>latitude_QC</destinationName>
+    <dataType>byte</dataType>
+    <addAttributes/>
+  </dataVariable>
+  <dataVariable>
+    <sourceName>LONGITUDE_QC</sourceName>
+    <destinationName>longitude_QC</destinationName>
+    <dataType>byte</dataType>
+    <addAttributes/>
+  </dataVariable>
+</dataset>
+
+<dataset type="EDDGridFromNcFiles" datasetID="copernicus_sst_med" active="true">
+    <reloadEveryNMinutes>10080</reloadEveryNMinutes>
+    <updateEveryNMillis>10000</updateEveryNMillis>
+    <fileDir>/datasets/MedSea/</fileDir>
+    <fileNameRegex>.*</fileNameRegex>
+    <recursive>true</recursive>
+    <pathRegex>.*</pathRegex>
+    <metadataFrom>last</metadataFrom>
+    <matchAxisNDigits>20</matchAxisNDigits>
+    <fileTableInMemory>false</fileTableInMemory>
+
+    <addAttributes>
+        <att name="title">Copernicus SST Mediterranean L4</att>
+        <att name="infoUrl">https://marine.copernicus.eu/</att>
+        <att name="institution">Copernicus Marine Service</att>
+        <att name="summary">Sea Surface Temperature Analysis for the Mediterranean Sea. This dataset provides high-resolution daily sea surface temperature.</att>
+        <att name="cdm_data_type">Grid</att>
+        <att name="sourceUrl">(local files)</att>
+    </addAttributes>
+
+    <axisVariable>
+        <sourceName>time</sourceName>
+        <destinationName>time</destinationName>
+        <addAttributes />
+    </axisVariable>
+
+    <axisVariable>
+        <sourceName>lat</sourceName>
+        <destinationName>latitude</destinationName>
+        <addAttributes />
+    </axisVariable>
+
+    <axisVariable>
+        <sourceName>lon</sourceName>
+        <destinationName>longitude</destinationName>
+        <addAttributes />
+    </axisVariable>
+
+    <dataVariable>
+        <sourceName>analysed_sst</sourceName>
+        <destinationName>sst</destinationName>
+        <dataType>double</dataType>
+        <addAttributes/>
+    </dataVariable>
+</dataset>
+
+
+<dataset type="EDDGridFromNcFiles" datasetID="unified_europe_sst" active="true">
+    <reloadEveryNMinutes>10080</reloadEveryNMinutes>
+    <updateEveryNMillis>10000</updateEveryNMillis>
+    <fileDir>/datasets/unified_europe_sst/</fileDir>
+    <fileNameRegex>.*\.nc</fileNameRegex>
+    <recursive>true</recursive>
+    <pathRegex>.*</pathRegex>
+    <metadataFrom>last</metadataFrom>
+    <matchAxisNDigits>20</matchAxisNDigits>
+    <fileTableInMemory>false</fileTableInMemory>
+
     <addAttributes>
-      <att name="units">seconds since 1970-01-01</att>
-      <att name="time_precision">1970-01-01T00:00:00Z</att>
+        <att name="title">Unified European & North Atlantic SST High-Resolution Mosaic</att>
+        <att name="infoUrl">https://marine.copernicus.eu/</att>
+        <att name="institution">SARTI - DEGI4ECO Project</att>
+        <att name="summary">Unified 1km resolution SST map combining Mediterranean, Baltic, Black Sea, and Atlantic L4 Copernicus products, with Global OSTIA fallback for full coverage (29N-73N, 12W-44E).</att>
+        <att name="cdm_data_type">Grid</att>
+        <att name="sourceUrl">(local files)</att>
     </addAttributes>
-  </dataVariable>
-  <dataVariable>
-    <sourceName>LATITUDE</sourceName>
-    <destinationName>latitude</destinationName>
-    <dataType>float</dataType>
-    <addAttributes/>
-  </dataVariable>
-  <dataVariable>
-    <sourceName>LONGITUDE</sourceName>
-    <destinationName>longitude</destinationName>
-    <dataType>float</dataType>
-    <addAttributes/>
-  </dataVariable>
-  <dataVariable>
-    <sourceName>DEPTH</sourceName>
-    <destinationName>depth</destinationName>
-    <dataType>float</dataType>
-    <addAttributes>
-      <att name="units">m</att>
-    </addAttributes>
-  </dataVariable>
-  <dataVariable>
-    <sourceName>TEMP</sourceName>
-    <destinationName>TEMP</destinationName>
-    <dataType>float</dataType>
-    <addAttributes/>
-  </dataVariable>
-  <dataVariable>
-    <sourceName>CNDC</sourceName>
-    <destinationName>CNDC</destinationName>
-    <dataType>float</dataType>
-    <addAttributes/>
-  </dataVariable>
-  <dataVariable>
-    <sourceName>LATITUDE_QC</sourceName>
-    <destinationName>latitude_QC</destinationName>
-    <dataType>byte</dataType>
-    <addAttributes/>
-  </dataVariable>
-  <dataVariable>
-    <sourceName>LONGITUDE_QC</sourceName>
-    <destinationName>longitude_QC</destinationName>
-    <dataType>byte</dataType>
-    <addAttributes/>
-  </dataVariable>
+
+    <axisVariable><sourceName>time</sourceName><destinationName>time</destinationName><addAttributes/></axisVariable>
+    <axisVariable><sourceName>lat</sourceName><destinationName>latitude</destinationName><addAttributes/></axisVariable>
+    <axisVariable><sourceName>lon</sourceName><destinationName>longitude</destinationName><addAttributes/></axisVariable>
+
+    <dataVariable>
+        <sourceName>sst</sourceName>
+        <destinationName>sst</destinationName>
+        <dataType>double</dataType>
+        <addAttributes>
+            <att name="units">degree_Celsius</att>
+            <att name="colorBarMinimum" type="double">0.0</att>
+            <att name="colorBarMaximum" type="double">35.0</att>
+        </addAttributes>
+    </dataVariable>
 </dataset>
 
 </erddapDatasets>
