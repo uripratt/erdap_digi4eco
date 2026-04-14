@@ -1,52 +1,36 @@
-# ERDDAP Playground #
+# ERDDAP - DEGI4ECO
 
-This repository contains all files required to set up a simple ERDDAP service using docker based on [Axiom's docker-erddap image](https://hub.docker.com/r/axiom/docker-erddap). It includes a dummy dataset based on a NetCDF file, so users can take a look and replicate it. 
+Este proyecto despliega un servidor ERDDAP para la visualización de datos de Temperatura Superficial del Mar (SST) de Europa.
 
-### Requirements ###
+## Descarga de Datos
 
-1. Install [Docker engine](https://docs.docker.com/engine/install/)
-2. Install git
+Los archivos de datos (`.nc`) deben descargarse de la web de **Copernicus Marine Service**. 
 
-### Setup ###
-1. clone this repository: ```$ git clone https://github.com/emso-eric/erddap-playground``` 
-2. Enter the folder and run docker: ```$ cd erddap-playground```  
-3. Start ERDDAP container: ```$ docker compose up -d```  
+### Productos requeridos:
+Los siguientes productos son necesarios para recrear el mosaico unificado de SST:
 
-Voilà! ERDDAP should be up and running at [http://localhost:8080/erddap](http://localhost:8080/erddap)
+- **Mediterráneo (MED):** `SST_MED_SST_L4_NRT_OBSERVATIONS_010_004_a_V2`
+- **Báltico (BAL):** `DMI-BALTIC-SST-L4-NRT-OBS_FULL_TIME_SERIE`
+- **Atlántico (ATL):** `IFREMER-ATL-SST-L4-NRT-OBS_FULL_TIME_SERIE`
+- **Mar Negro (BS):** `SST_BS_SST_L4_NRT_OBSERVATIONS_010_006_a_V2`
+- **Global (GLO):** `METOFFICE-GLO-SST-L4-NRT-OBS-SST-V2` (Usado como capa de respaldo global OSTIA)
 
-## Project Organization ##
-
-This project is organized as follows:
-
-```bash 
-├── conf                 # Folder to store configuration files
-│   ├── datasets.xml     # Datasets configuration and HTML customization
-│   ├── setup.xml        # ERDDAP Server configuration
-│   └── custom_logo.png  # example logo
-|
-├── datasets             # Folder where our datasets will be stored
-│   ├── DummyData        # Example dataset path  
-│       └── dummydata.nc # example NetCDF file with EMSO metadata
-│   
-│── erddapData           # ERDDAP internal stuff
-│   ...
-│   └── logs             # ERDDAP's logs, worth taking a look
-|       └── log.txt      # ERDDAP's latest log
+Puedes usar el script proporcionado para automatizar la descarga si tienes configuradas las credenciales de `copernicusmarine`:
+```bash
+python scripts/fetch_copernicus.py
 ```
 
-The ```conf``` folder contains the ``setup.xml`` and ``datasets.xml``configuration files. For further details consult the official [setup](https://coastwatch.pfeg.noaa.gov/erddap/download/setup.html) and [datasets.xml](https://coastwatch.pfeg.noaa.gov/erddap/download/setupDatasetsXml.html) documentation.  
+## Ejecución
 
-## Adding new datasets ##
+Para levantar el servidor ERDDAP usando Docker:
+```bash
+docker compose up -d
+```
 
-To add anew dataset, create a new folder within ``datasets`` and drop your files there (there can be as many subdirectories as needed). Then, in your ```datasets.xml``` file you can copy&paste the dummy dataset and do the following changes:
+El servidor estará disponible en: [http://localhost:8080/erddap](http://localhost:8080/erddap)
 
-1. change the ```datasetID``` attribute
-```<fileDir>>/dataset/NewDataset</fileDir>```
-2. change the ```<fileDir>``` to the path where your data is stored. Remember that the datasets folder is mounted at ```/datasets```  
-3. Adapt the rest of the dataset of the metadata attributes.
-4. Adapt the ```dataVariables``` as needed and select the proper [dataTypes](https://coastwatch.pfeg.noaa.gov/erddap/download/setupDatasetsXml.html#dataTypes) for every variable. ```<sourceName>``` is the name in the NetCDFs and ```<destinationName>``` is the name exposed by ERDDAP. Coordinates variables like TIME, LATITUDE, LONGITUDE and DEPTH variables should be left as in the example.
+## Organización del Proyecto
 
-## Contact Info ##
-**Author**: Enoc Martínez  
-**Affiliation**: Universitat Politècnica de Catalunya   
-**Contact**: enoc.martinez@upc.edu
+- `conf/`: Archivos de configuración de ERDDAP (`datasets.xml`, `setup.xml`).
+- `datasets/`: Directorio donde se almacenan los archivos NetCDF.
+- `scripts/`: Scripts para la descarga y procesado de los datos.
