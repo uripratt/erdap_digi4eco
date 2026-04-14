@@ -1,36 +1,57 @@
-# ERDDAP - DEGI4ECO
+# ERDDAP - DEGI4ECO Project
 
-Este proyecto despliega un servidor ERDDAP para la visualización de datos de Temperatura Superficial del Mar (SST) de Europa.
+This repository manages an ERDDAP service designed to visualize high-resolution European Sea Surface Temperature (SST) data. It builds upon the **erddap-playground** architecture to provide a containerized environmental data server.
 
-## Descarga de Datos
+## Background: ERDDAP Playground
 
-Los archivos de datos (`.nc`) deben descargarse de la web de **Copernicus Marine Service**. 
+The project uses a standard ERDDAP deployment based on [Axiom's docker-erddap image](https://hub.docker.com/r/axiom/docker-erddap). 
+- **Dockerized Environment**: The entire service is encapsulated in Docker, ensuring portability and ease of setup.
+- **Project Structure**:
+    - `conf/`: Contains `setup.xml` (server settings) and `datasets.xml` (dataset definitions).
+    - `datasets/`: The data repository where NetCDF (`.nc`) files are stored and served.
+    - `erddapData/`: Internal ERDDAP storage for logs and state.
 
-### Productos requeridos:
-Los siguientes productos son necesarios para recrear el mosaico unificado de SST:
+## Data Processing Pipeline
 
-- **Mediterráneo (MED):** `SST_MED_SST_L4_NRT_OBSERVATIONS_010_004_a_V2`
-- **Báltico (BAL):** `DMI-BALTIC-SST-L4-NRT-OBS_FULL_TIME_SERIE`
-- **Atlántico (ATL):** `IFREMER-ATL-SST-L4-NRT-OBS_FULL_TIME_SERIE`
-- **Mar Negro (BS):** `SST_BS_SST_L4_NRT_OBSERVATIONS_010_006_a_V2`
-- **Global (GLO):** `METOFFICE-GLO-SST-L4-NRT-OBS-SST-V2` (Usado como capa de respaldo global OSTIA)
+The project includes a series of Python scripts to automate the acquisition and merging of Copernicus Marine datasets.
 
-Puedes usar el script proporcionado para automatizar la descarga si tienes configuradas las credenciales de `copernicusmarine`:
+### 1. Data Acquisition (`fetch_copernicus.py`)
+This script downloads the required NetCDF files from the **Copernicus Marine Service**. You must have your Copernicus credentials configured to use it.
+
+**Required Products:**
+- **Mediterranean:** `SST_MED_SST_L4_NRT_OBSERVATIONS_010_004_a_V2`
+- **Baltic:** `DMI-BALTIC-SST-L4-NRT-OBS_FULL_TIME_SERIE`
+- **Atlantic:** `IFREMER-ATL-SST-L4-NRT-OBS_FULL_TIME_SERIE`
+- **Black Sea:** `SST_BS_SST_L4_NRT_OBSERVATIONS_010_006_a_V2`
+- **Global:** `METOFFICE-GLO-SST-L4-NRT-OBS-SST-V2` (Used as a fallback for full coverage)
+
+Run the script:
 ```bash
 python scripts/fetch_copernicus.py
 ```
 
-## Ejecución
+### 2. Mesh Generation (`build_mesh.py`)
+Combines the regional datasets into a unified 1km resolution European SST mosaic. It uses a priority merging strategy (Regional > Global) to ensure the highest resolution data is used where available.
 
-Para levantar el servidor ERDDAP usando Docker:
+Run the script:
+```bash
+python scripts/build_mesh.py
+```
+
+### 3. Visualization (`plot_unified_sst.py`)
+Generates a static map (`unified_sst_map.png`) of the latest processed data for quick verification.
+
+Run the script:
+```bash
+python scripts/plot_unified_sst.py
+```
+
+## Running the Server
+
+Once the data is processed and located in the `datasets/` folder, you can start the ERDDAP server:
+
 ```bash
 docker compose up -d
 ```
 
-El servidor estará disponible en: [http://localhost:8080/erddap](http://localhost:8080/erddap)
-
-## Organización del Proyecto
-
-- `conf/`: Archivos de configuración de ERDDAP (`datasets.xml`, `setup.xml`).
-- `datasets/`: Directorio donde se almacenan los archivos NetCDF.
-- `scripts/`: Scripts para la descarga y procesado de los datos.
+The server will be available at: [http://localhost:8080/erddap](http://localhost:8080/erddap)
