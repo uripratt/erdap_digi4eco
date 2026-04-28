@@ -4,7 +4,9 @@ import numpy as np
 import os
 
 def plot_unified_sst():
-    nc_path = '/home/uripratt/Documents/SARTI/PROJECTS/DEGI4ECO/erddap/erddap-playground/datasets/unified_europe_sst/EUROPE_TOTAL_1KM_SST.nc'
+    scripts_dir = os.path.dirname(os.path.abspath(__file__))
+    base_dir = os.path.dirname(scripts_dir)
+    nc_path = os.path.join(base_dir, 'datasets', 'unified_europe_sst', 'EUROPE_TOTAL_1KM_SST.nc')
     if not os.path.exists(nc_path):
         print(f"Error: File not found at {nc_path}")
         return
@@ -30,7 +32,7 @@ def plot_unified_sst():
     plt.xlabel("Longitude")
     plt.ylabel("Latitude")
     
-    output_png = '/home/uripratt/Documents/SARTI/PROJECTS/DEGI4ECO/erddap/erddap-playground/scripts/unified_sst_map.png'
+    output_png = os.path.join(scripts_dir, 'unified_sst_map.png')
     plt.savefig(output_png, bbox_inches='tight', dpi=150)
     plt.close()
     

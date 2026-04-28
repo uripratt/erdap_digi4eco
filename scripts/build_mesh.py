@@ -19,14 +19,15 @@ def build_european_mesh():
         return
 
     # 1. Define Master Mesh (0.01 degree resolution ~ 1km)
-    # Covering expanded domain: 29.00208 to 72.99792 Lat, -11.99792 to 43.99792 Lon
-    master_lat = np.arange(29.00208, 72.99792, 0.01).astype(np.float32)
-    master_lon = np.arange(-11.99792, 43.99792, 0.01).astype(np.float32)
+    # Covering expanded domain: -12 to 43 Lon, 29 to 73 Lat
+    master_lat = np.arange(29.0, 73.001, 0.01).astype(np.float32)
+    master_lon = np.arange(-12.0, 43.001, 0.01).astype(np.float32)
 
     # 2. Identify the latest common time-slice to save memory
     # We will only process the LATEST day for the plot/initial verification
     all_datasets = []
-    region_priority = ["MED", "BAL", "BS", "ATL", "GLO"]
+    # Prioritizing ATL (IBI) for the Spanish coast
+    region_priority = ["ATL", "MED", "BAL", "BS", "GLO"]
     
     print("Finding latest time slice across regions...")
     latest_times = []
