@@ -106,9 +106,9 @@
 
   <!-- BLOCK 6: ERDDAP SERVICE -->
   <g transform="translate(400, 820)">
-    <rect x="0" y="0" width="400" height="100" rx="20" fill="#212529" stroke="#000" stroke-width="1" />
+    <rect x="0" y="0" width="400" height="100" rx="20" fill="#495057" stroke="#343a40" stroke-width="1.5" />
     <text x="200" y="40" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="#ffffff">🌐 ERDDAP Service</text>
-    <line x1="50" y1="55" x2="350" y2="55" stroke="#444" />
+    <line x1="50" y1="55" x2="350" y2="55" stroke="#6c757d" />
     <text x="200" y="80" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#00d2ff" font-weight="bold">Unified Data Access API (Docker)</text>
   </g>
 
@@ -138,11 +138,8 @@
   <line x1="975" y1="570" x2="975" y2="668" stroke="#444" stroke-width="1.5" marker-end="url(#arrowhead)" />
 
   <!-- Final Dashed Arrows to ERDDAP (Starting from Visualization blocks) -->
-  <!-- Col 1: Vis to ERDDAP -->
   <path d="M225,730 L225,790 L500,790 L500,818" fill="none" stroke="#007bff" stroke-width="1.2" stroke-dasharray="4,2" marker-end="url(#arrowhead)" />
-  <!-- Col 2: Vis to ERDDAP -->
   <line x1="600" y1="730" x2="600" y2="818" stroke="#007bff" stroke-width="1.2" stroke-dasharray="4,2" marker-end="url(#arrowhead)" />
-  <!-- Col 3: Vis to ERDDAP -->
   <path d="M975,730 L975,790 L700,790 L700,818" fill="none" stroke="#007bff" stroke-width="1.2" stroke-dasharray="4,2" marker-end="url(#arrowhead)" />
 
 </svg>
