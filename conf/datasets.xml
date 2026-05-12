@@ -318,4 +318,62 @@ another.name@company.com, *@example.com</subscriptionEmailBlacklist>
     </dataVariable>
 </dataset>
 
+
+<dataset type="EDDGridFromNcFiles" datasetID="obsea_local_dto" active="true">
+    <reloadEveryNMinutes>10080</reloadEveryNMinutes>
+    <updateEveryNMillis>10000</updateEveryNMillis>
+    <fileDir>/datasets/unified_europe_3d/</fileDir>
+    <fileNameRegex>OBSEA_LOCAL_DTO_3D\.nc</fileNameRegex>
+    <recursive>true</recursive>
+    <pathRegex>.*</pathRegex>
+    <metadataFrom>last</metadataFrom>
+    <matchAxisNDigits>20</matchAxisNDigits>
+    <fileTableInMemory>false</fileTableInMemory>
+
+    <addAttributes>
+        <att name="title">OBSEA Local Digital Twin (DTO) - High Resolution</att>
+        <att name="infoUrl">https://marine.copernicus.eu/</att>
+        <att name="institution">SARTI - DEGI4ECO Project</att>
+        <att name="summary">High-resolution (200m) local subset of the IBI physical model around the OBSEA observatory. Domain: [1.57-1.9E, 41.15-41.26N].</att>
+        <att name="cdm_data_type">Grid</att>
+        <att name="sourceUrl">(local files)</att>
+    </addAttributes>
+
+    <axisVariable><sourceName>time</sourceName><destinationName>time</destinationName><addAttributes/></axisVariable>
+    <axisVariable><sourceName>depth</sourceName><destinationName>depth</destinationName><addAttributes><att name="units">m</att></addAttributes></axisVariable>
+    <axisVariable><sourceName>lat</sourceName><destinationName>latitude</destinationName><addAttributes/></axisVariable>
+    <axisVariable><sourceName>lon</sourceName><destinationName>longitude</destinationName><addAttributes/></axisVariable>
+
+    <dataVariable>
+        <sourceName>temp</sourceName>
+        <destinationName>temp</destinationName>
+        <dataType>double</dataType>
+        <addAttributes>
+            <att name="units">degree_Celsius</att>
+            <att name="colorBarMinimum" type="double">15.0</att>
+            <att name="colorBarMaximum" type="double">20.0</att>
+        </addAttributes>
+    </dataVariable>
+    <dataVariable>
+        <sourceName>sal</sourceName>
+        <destinationName>sal</destinationName>
+        <dataType>double</dataType>
+        <addAttributes>
+            <att name="units">psu</att>
+            <att name="colorBarMinimum" type="double">37.0</att>
+            <att name="colorBarMaximum" type="double">38.0</att>
+        </addAttributes>
+    </dataVariable>
+
+
+    <dataVariable>
+        <sourceName>pres</sourceName>
+        <destinationName>pres</destinationName>
+        <dataType>double</dataType>
+        <addAttributes>
+            <att name="units">dbar</att>
+        </addAttributes>
+    </dataVariable>
+</dataset>
+
 </erddapDatasets>

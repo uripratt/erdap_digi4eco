@@ -80,7 +80,7 @@ def download_3d_all(days_history=1, depth_range=(0, 100), bbox=(-12, 29, 43, 73)
             copernicusmarine.subset(
                 dataset_id=dataset_id,
                 output_directory=out_dir,
-                variables=["thetao"],
+                variables=["thetao", "so"],
                 start_datetime=start_date_str,
                 end_datetime=end_date_str,
                 minimum_depth=depth_range[0],

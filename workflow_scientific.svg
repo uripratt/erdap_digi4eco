@@ -1,0 +1,100 @@
+<svg width="900" height="850" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="900" height="850" fill="#ffffff" />
+  
+  <!-- Definitions for arrows -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#444" />
+    </marker>
+  </defs>
+
+  <!-- Step 1: Data Sources -->
+  <g transform="translate(50, 50)">
+    <rect x="0" y="0" width="220" height="170" rx="8" fill="#f8f9fa" stroke="#333" stroke-width="1.5" />
+    <text x="110" y="25" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle">Data Sources (CMEMS)</text>
+    <line x1="20" y1="35" x2="200" y2="35" stroke="#ddd" />
+    
+    <text x="20" y="55" font-family="Arial, sans-serif" font-size="11" font-weight="bold">3D Models (Thetao):</text>
+    <text x="30" y="75" font-family="Arial, sans-serif" font-size="11">• IBI (2.5 km)</text>
+    <text x="30" y="90" font-family="Arial, sans-serif" font-size="11">• MEDSEA (4.2 km)</text>
+    
+    <text x="20" y="115" font-family="Arial, sans-serif" font-size="11" font-weight="bold">2D Observations (SST):</text>
+    <text x="30" y="130" font-family="Arial, sans-serif" font-size="11">• MED L4 SST (1 km)</text>
+    <text x="30" y="145" font-family="Arial, sans-serif" font-size="11">• GLO L4 SST (9 km)</text>
+    <!-- Margin added by increasing height from 150 to 170 -->
+  </g>
+
+  <!-- Step 2: Ingestion -->
+  <g transform="translate(350, 65)">
+    <rect x="0" y="0" width="200" height="140" rx="5" fill="#e9ecef" stroke="#333" stroke-width="1.5" />
+    <text x="100" y="30" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle">Data Acquisition</text>
+    <line x1="20" y1="40" x2="180" y2="40" stroke="#ddd" />
+    <text x="100" y="65" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" font-style="italic">fetch_copernicus.py</text>
+    <text x="20" y="90" font-family="Arial, sans-serif" font-size="10">• CMEMS API / Toolbox</text>
+    <text x="20" y="105" font-family="Arial, sans-serif" font-size="10">• Domain: -12° to 43°E</text>
+    <text x="20" y="120" font-family="Arial, sans-serif" font-size="10">• History: 7-day Rolling</text>
+  </g>
+
+  <!-- Step 3: Processing Engine -->
+  <g transform="translate(350, 275)">
+    <rect x="0" y="0" width="200" height="165" rx="5" fill="#dee2e6" stroke="#333" stroke-width="1.5" />
+    <text x="100" y="30" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle">Fusion &amp; Homogenization</text>
+    <line x1="20" y1="40" x2="180" y2="40" stroke="#ddd" />
+    
+    <text x="100" y="60" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" font-style="italic">build_mesh.py (2D)</text>
+    <text x="100" y="75" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" font-style="italic">build_mesh_3d.py (3D)</text>
+    
+    <text x="20" y="105" font-family="Arial, sans-serif" font-size="11" font-weight="bold">Hierarchical Logic:</text>
+    <text x="100" y="125" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#0056b3">IBI &gt; MEDSEA &gt; GLOBAL</text>
+    
+    <text x="20" y="145" font-family="Arial, sans-serif" font-size="10">• 40 depth levels (1-294 m)</text>
+  </g>
+
+  <!-- Step 4: Spatial Enhancement -->
+  <g transform="translate(350, 510)">
+    <rect x="0" y="0" width="200" height="140" rx="5" fill="#ced4da" stroke="#333" stroke-width="1.5" />
+    <text x="100" y="25" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle">Local Digital Twin (DTO)</text>
+    <line x1="20" y1="35" x2="180" y2="35" stroke="#ddd" />
+    <text x="100" y="55" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" font-style="italic">build_obsea_local_dto.py</text>
+    
+    <text x="20" y="80" font-family="Arial, sans-serif" font-size="10">• Resolution: ~200 m</text>
+    <text x="20" y="95" font-family="Arial, sans-serif" font-size="10">• Bilinear Interpolation</text>
+    <text x="20" y="110" font-family="Arial, sans-serif" font-size="10">• Domain: OBSEA Observatory</text>
+    <!-- Margin added by increasing height from 120 to 140 -->
+  </g>
+
+  <!-- Step 5: Distribution -->
+  <g transform="translate(350, 720)">
+    <rect x="0" y="0" width="200" height="80" rx="10" fill="#212529" stroke="#000" stroke-width="1" />
+    <text x="100" y="35" font-family="Arial, sans-serif" font-size="15" font-weight="bold" text-anchor="middle" fill="#ffffff">ERDDAP Server</text>
+    <line x1="30" y1="45" x2="170" y2="45" stroke="#444" />
+    <text x="100" y="65" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#00d2ff">RESTful API / NetCDF</text>
+  </g>
+
+  <!-- Data Products (Side Box) -->
+  <g transform="translate(620, 295)">
+    <rect x="0" y="0" width="220" height="120" rx="10" fill="#fff" stroke="#007bff" stroke-width="2" stroke-dasharray="8,4" />
+    <text x="110" y="30" font-family="Arial, sans-serif" font-size="13" font-weight="bold" text-anchor="middle" fill="#007bff">Validated Output Products</text>
+    <text x="20" y="60" font-family="Arial, sans-serif" font-size="11" fill="#333">• EUROPE_SST_UNIFIED.nc</text>
+    <text x="20" y="80" font-family="Arial, sans-serif" font-size="11" fill="#333">• EUROPE_TOTAL_3D_TEMP.nc</text>
+    <text x="20" y="100" font-family="Arial, sans-serif" font-size="11" fill="#333">• OBSEA_LOCAL_DTO_3D.nc</text>
+  </g>
+
+  <!-- Connectors -->
+  <!-- Sources to Ingestion -->
+  <line x1="270" y1="135" x2="348" y2="135" stroke="#444" stroke-width="2" marker-end="url(#arrowhead)" />
+  
+  <!-- Ingestion to Fusion -->
+  <line x1="450" y1="205" x2="450" y2="273" stroke="#444" stroke-width="2" marker-end="url(#arrowhead)" />
+  
+  <!-- Fusion to DTO -->
+  <line x1="450" y1="440" x2="450" y2="508" stroke="#444" stroke-width="2" marker-end="url(#arrowhead)" />
+  
+  <!-- DTO to ERDDAP -->
+  <line x1="450" y1="650" x2="450" y2="718" stroke="#444" stroke-width="2" marker-end="url(#arrowhead)" />
+  
+  <!-- Fusion to Side Box (Output) -->
+  <line x1="550" y1="355" x2="618" y2="355" stroke="#007bff" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arrowhead)" />
+
+</svg>

@@ -1,5 +1,40 @@
+# ERDDAP / Copernicus Pipeline
 erddapData/*
-.idea
-
 datasets/
 *.nc
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Generated Outputs (Plots & Dashboards)
+*.png
+*.jpg
+*.jpeg
+*.pdf
+project_synthesis.html
+# Keep the scientific workflow SVG as it's meant for the repo
+!workflow_scientific.svg

@@ -1,158 +1,202 @@
 # ERDDAP – DEGI4ECO Project
 
-This repository builds upon the **ERDDAP Playground architecture** to deploy a containerized ERDDAP service for high-resolution **European Sea Surface Temperature (SST)** data integration, processing, and visualization.
+[![CMEMS](https://img.shields.io/badge/Data-Copernicus%20CMEMS-blue)](https://marine.copernicus.eu/)
+[![Docker](https://img.shields.io/badge/Runtime-Docker-informational)](https://hub.docker.com/r/axiom/docker-erddap)
+[![Python](https://img.shields.io/badge/Pipeline-Python%203.10-yellowgreen)](https://www.python.org/)
+[![ERDDAP](https://img.shields.io/badge/Server-ERDDAP%202025-orange)](https://coastwatch.pfeg.noaa.gov/erddap/)
 
-It extends the base ERDDAP setup with a full **data engineering and geospatial processing pipeline**, including Copernicus Marine data ingestion, multi-basin SST merging, and advanced visualization workflows.
+This repository manages a containerized **ERDDAP** service for high-resolution European ocean temperature data integration, 3D visualization, and local digital twin generation for the **OBSEA observatory** (Vilanova i la Geltrú, Catalonia).
 
----
-
-# Background: ERDDAP Playground
-
-The project is based on the standard ERDDAP deployment using [Axiom’s docker-erddap image](https://hub.docker.com/r/axiom/docker-erddap).
-
-## Core features
-
-* Fully Dockerized ERDDAP environment
-* Portable and reproducible deployment
-* Compatible with NetCDF-based datasets
-
-## Project structure
-
-conf/ → ERDDAP configuration (setup.xml, datasets.xml)
-datasets/ → NetCDF datasets served by ERDDAP
-erddapData/ → Internal ERDDAP logs and system state
-scripts/ → Data processing and visualization pipeline
+The project extends the [Axiom docker-erddap](https://hub.docker.com/r/axiom/docker-erddap) architecture with a full geospatial data engineering pipeline: from Copernicus Marine ingestion, to hierarchical multi-basin merging, to scientific 3D layer visualization.
 
 ---
 
-# Extended DEGI4ECO Pipeline
+## System Architecture
 
-This project extends the base playground with a full SST processing workflow over European basins.
+```mermaid
+graph TD
+    subgraph CMEMS["☁️ Copernicus CMEMS Sources"]
+        IBI["IBI Model<br/>2.5 km | Priority 1<br/>thetao (3D)"]
+        MED["MEDSEA Model<br/>4.2 km | Priority 2<br/>thetao (3D)"]
+        GLO["Global Fallback<br/>9 km | Priority 3<br/>thetao + SST"]
+        SST["L4 SST Obs<br/>Med / Atl / Bal / BS"]
+    end
+
+    subgraph PIPELINE["⚙️ Python Processing Pipeline"]
+        Fetch["fetch_copernicus.py<br/>─────────────────<br/>CMEMS API Download<br/>Domain: −12→43°E | 29→73°N"]
+        Mesh2D["build_mesh.py<br/>─────────────────<br/>2D SST Mosaic (1 km)"]
+        Mesh3D["build_mesh_3d.py<br/>─────────────────<br/>3D Temp Mesh (40 levels)<br/>1.02 m → 294 m"]
+        DTO["build_obsea_local_dto.py<br/>─────────────────<br/>Local DTO (~200 m)<br/>OBSEA Domain"]
+    end
+
+    subgraph DATA["💾 Processed Datasets"]
+        SST_NC[("EUROPE_SST_UNIFIED.nc")]
+        TEMP3D_NC[("EUROPE_TOTAL_3D_TEMP.nc")]
+        DTO_NC[("OBSEA_LOCAL_DTO_3D.nc")]
+    end
+
+    subgraph VIS["📊 Scientific Visualization Suite"]
+        P1["plot_unified_sst.py<br/>Surface Map"]
+        P2["plot_3d_layers.py<br/>3×3 Native Layer Collage"]
+        P3["plot_3d_profile.py<br/>Vertical Profile at OBSEA"]
+        P4["plot_raw_comparison.py<br/>IBI vs MEDSEA Diff"]
+        P5["plot_obsea_local_dto.py<br/>High-Res Local Map"]
+    end
+
+    subgraph ERDDAP_SVC["🌐 ERDDAP Service (Docker)"]
+        DS1["unified_europe_sst"]
+        DS2["unified_europe_3d"]
+        DS3["obsea_local_dto"]
+    end
+
+    IBI & MED & GLO --> Fetch
+    SST --> Fetch
+    Fetch --> Mesh2D
+    Fetch --> Mesh3D
+    Mesh3D --> DTO
+    Mesh2D --> SST_NC
+    Mesh3D --> TEMP3D_NC
+    DTO --> DTO_NC
+    SST_NC --> P1 & DS1
+    TEMP3D_NC --> P2 & P3 & P4 & DS2
+    DTO_NC --> P5 & DS3
+```
+
+> **Hierarchical Mosaic Logic**: IBI (highest priority, 2.5 km) fills cells first. MEDSEA covers the remaining Mediterranean. GLO serves as a full-domain fallback. This guarantees that OBSEA always receives the highest-resolution model available.
 
 ---
 
-# Data Processing Pipeline
+## Project Structure
 
-## 1. Data Acquisition (`fetch_copernicus.py`)
+```
+erddap_digi4models/
+├── conf/
+│   ├── datasets.xml          ← ERDDAP dataset registry
+│   ├── setup.xml             ← Server configuration
+│   └── custom_logo.png
+├── datasets/
+│   ├── raw/                  ← Downloaded SST observations
+│   ├── raw_3d/               ← Downloaded 3D physical models (IBI, MED...)
+│   ├── unified_europe_sst/   ← EUROPE_SST_UNIFIED.nc
+│   └── unified_europe_3d/    ← EUROPE_TOTAL_3D_TEMP.nc + OBSEA_LOCAL_DTO_3D.nc
+├── erddapData/               ← ERDDAP internal state / logs
+├── scripts/
+│   ├── fetch_copernicus.py       ← Download from CMEMS
+│   ├── build_mesh.py             ← 2D SST mosaic generation
+│   ├── build_mesh_3d.py          ← 3D temperature mesh (40 levels)
+│   ├── build_obsea_local_dto.py  ← High-res local DTO (~200m)
+│   ├── plot_unified_sst.py       ← Surface temperature map
+│   ├── plot_3d_layers.py         ← 3×3 native layer collage
+│   ├── plot_3d_profile.py        ← Vertical profile at OBSEA
+│   ├── plot_raw_comparison.py    ← IBI vs MEDSEA raw comparison
+│   └── plot_obsea_local_dto.py   ← Local DTO visualization
+├── main.py                       ← Orchestration entry-point
+└── docker-compose.yaml
+```
 
-Downloads Copernicus Marine SST products for multiple regions:
+---
 
-* Mediterranean: `SST_MED_SST_L4_NRT_OBSERVATIONS_010_004_a_V2`
-* Baltic: `DMI-BALTIC-SST-L4-NRT-OBS_FULL_TIME_SERIE`
-* Atlantic: `IFREMER-ATL-SST-L4-NRT-OBS_FULL_TIME_SERIE`
-* Black Sea: `SST_BS_SST_L4_NRT_OBSERVATIONS_010_006_a_V2`
-* Global fallback: `METOFFICE-GLO-SST-L4-NRT-OBS-SST-V2`
+## Data Processing Pipeline
+
+### 1. Data Acquisition — `fetch_copernicus.py`
+
+Downloads required NetCDF files from the Copernicus Marine Service (CMEMS).
+Requires Copernicus credentials configured via `copernicusmarine`.
+
+| Type | Region | Product ID |
+|------|--------|-----------|
+| SST (2D) | Mediterranean | `SST_MED_SST_L4_NRT_OBSERVATIONS_010_004_a_V2` |
+| SST (2D) | Baltic | `DMI-BALTIC-SST-L4-NRT-OBS_FULL_TIME_SERIE` |
+| SST (2D) | Atlantic | `IFREMER-ATL-SST-L4-NRT-OBS_FULL_TIME_SERIE` |
+| SST (2D) | Black Sea | `SST_BS_SST_L4_NRT_OBSERVATIONS_010_006_a_V2` |
+| SST (2D) | Global fallback | `METOFFICE-GLO-SST-L4-NRT-OBS-SST-V2` |
+| Thetao (3D) | Mediterranean | `cmems_mod_med_phy-tem_anfc_4.2km_P1D-m` |
+| Thetao (3D) | Atlantic / IBI | `cmems_mod_ibi_phy_anfc_0.027deg-3D_P1D-m` |
+| Thetao (3D) | Global | `cmems_mod_glo_phy-thetao_anfc_0.083deg_P1D-m` |
 
 ```bash
 python scripts/fetch_copernicus.py
 ```
 
----
+### 2. 2D SST Mosaic — `build_mesh.py`
 
-## 2. Mesh Generation (`build_mesh.py`, `build_mesh_3d.py`)
-
-Constructs a unified high-resolution SST mosaic (~1 km) across European seas.
-
-* Priority-based merging: Regional > Global
-* Produces consistent spatial coverage
-* Supports 2D and 3D reconstructions
+Combines all regional SST observations into a unified **1 km resolution** European mosaic (`EUROPE_SST_UNIFIED.nc`) using the hierarchical priority strategy.
 
 ```bash
 python scripts/build_mesh.py
 ```
 
-or
+### 3. 3D Temperature Mesh — `build_mesh_3d.py`
+
+Builds a unified **40-level depth** temperature dataset from IBI + MEDSEA + GLO models (`EUROPE_TOTAL_3D_TEMP.nc`). Depth range: **1.02 m → 294 m**.
 
 ```bash
 python scripts/build_mesh_3d.py
 ```
 
----
+### 4. OBSEA Local Digital Twin — `build_obsea_local_dto.py`
 
-## 3. Visualization Pipeline
+Generates a high-resolution (~200 m) local subset of the IBI model centered around the **OBSEA observatory**:
 
-Scientific visualization modules:
+- **Domain**: `[1.57°E – 1.90°E, 41.15°N – 41.26°N]`
+- **Output**: `OBSEA_LOCAL_DTO_3D.nc`
+- **Resolution**: 0.002° (~200 m)
 
-* `plot_unified_sst.py` → SST overview map
-* `plot_3d_profile.py` → vertical thermal structure
-* `plot_3d_layers.py` → layered 3D reconstruction
-* `compare_obsea_models.py` → model benchmarking
-
-Outputs:
-
-* unified_sst_map.png
-* temperature_layers_3d.png
-* obsea_model_comparison.png
+```bash
+python scripts/build_obsea_local_dto.py
+```
 
 ---
 
-# Running the ERDDAP Server
+## Scientific Visualization
 
-Once datasets are generated and placed in `datasets/`, start the server:
+| Script | Output | Description |
+|--------|--------|-------------|
+| `plot_unified_sst.py` | `unified_sst_map.png` | Full-domain surface temperature |
+| `plot_3d_layers.py` | `temperature_layers_3d_v2.png` | 3×3 collage of native depth layers |
+| `plot_3d_profile.py` | `obsea_3d_profile.png` | Vertical temperature profile at OBSEA |
+| `plot_raw_comparison.py` | `raw_model_comparison.png` | IBI vs MEDSEA raw model comparison |
+| `plot_obsea_local_dto.py` | `obsea_local_dto_surface.png` | High-res local DTO map |
+
+---
+
+## Running the ERDDAP Server
 
 ```bash
 docker compose up -d
 ```
 
-ERDDAP will be available at:
+Access at: [http://localhost:8080/erddap](http://localhost:8080/erddap)
 
-[http://localhost:8080/erddap](http://localhost:8080/erddap)
+### Available ERDDAP Datasets
 
----
-
-# Adding New Datasets
-
-Create a folder inside `datasets/`
-Add NetCDF files
-Edit `conf/datasets.xml`:
-
-* Set datasetID
-* Configure <fileDir> → /datasets/...
-* Define metadata and variables
-* Ensure coordinate variables:
-
-  * TIME
-  * LATITUDE
-  * LONGITUDE
-  * DEPTH
+| Dataset ID | Description | Resolution |
+|------------|-------------|------------|
+| `unified_europe_sst` | European SST mosaic | ~1 km |
+| `unified_europe_3d` | 3D temperature (40 levels) | ~4 km |
+| `obsea_local_dto` | OBSEA local digital twin | ~200 m |
 
 ---
 
-# Documentation
+## Scientific Notes
 
-[https://coastwatch.pfeg.noaa.gov/erddap/download/setup.html](https://coastwatch.pfeg.noaa.gov/erddap/download/setup.html)
-[https://coastwatch.pfeg.noaa.gov/erddap/download/setupDatasetsXml.html](https://coastwatch.pfeg.noaa.gov/erddap/download/setupDatasetsXml.html)
-
----
-
-# Project Structure
-
-conf/
-├── datasets.xml
-├── setup.xml
-└── custom_logo.png
-
-datasets/
-└── NetCDF files served by ERDDAP
-
-erddapData/
-└── logs/
-
-scripts/
-├── fetch_copernicus.py
-├── build_mesh.py
-├── build_mesh_3d.py
-├── plot_unified_sst.py
-├── plot_3d_profile.py
-├── plot_3d_layers.py
-└── compare_obsea_models.py
+- **Smart Selection (OBSEA)**: Profiles use the nearest cell with depth ≥ 20 m to avoid shoreline artefacts.
+- **Native Fidelity**: Layer visualizations preserve native spatial resolution (2.5 km IBI / 4.2 km MEDSEA).
+- **Land Masking**: White areas in local DTO maps represent land/bathymetric voids in the IBI model grid.
 
 ---
 
-# Contact
+## Documentation
 
-Author: Oriol Prat
-Affiliation: Universitat Politècnica de Catalunya (UPC)
-Project: DEGI4ECO / SARTI Group
-Contact: [oriol.prat.bayarri@upc.edu](mailto:oriol.prat.bayarri@upc.edu)
+- [ERDDAP Setup Guide](https://coastwatch.pfeg.noaa.gov/erddap/download/setup.html)
+- [datasets.xml Reference](https://coastwatch.pfeg.noaa.gov/erddap/download/setupDatasetsXml.html)
+- [Copernicus Marine Toolbox](https://help.marine.copernicus.eu/en/collections/4060068-copernicus-marine-toolbox)
 
+---
+
+## Contact
+
+**Author:** Oriol Prat  
+**Affiliation:** Universitat Politècnica de Catalunya (UPC) — SARTI Group  
+**Project:** DEGI4ECO  
+**Email:** [oriol.prat.bayarri@upc.edu](mailto:oriol.prat.bayarri@upc.edu)
