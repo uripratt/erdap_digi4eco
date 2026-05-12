@@ -13,57 +13,7 @@ The project extends the [Axiom docker-erddap](https://hub.docker.com/r/axiom/doc
 
 ## System Architecture
 
-```mermaid
-graph TD
-    subgraph SOURCES["☁️ Copernicus CMEMS Sources"]
-        direction LR
-        IBI["IBI Model<br/>(2.5 km)"]
-        MED["MEDSEA Model<br/>(4.2 km)"]
-        GLO["Global Fallback<br/>(9 km)"]
-        SST["L4 SST Obs<br/>(1 km)"]
-    end
-
-    Fetch["📥 fetch_copernicus.py<br/>CMEMS API Download"]
-
-    subgraph PIPELINE["⚙️ Processing Engine (scripts/)"]
-        direction LR
-        Mesh2D["build_mesh.py<br/>(2D SST)"]
-        Mesh3D["build_mesh_3d.py<br/>(3D Temp)"]
-        DTO["build_obsea_local_dto.py<br/>(Local DTO)"]
-    end
-
-    subgraph DATASETS["💾 Processed Datasets (NetCDF)"]
-        direction LR
-        NC_SST[("EUROPE_SST_UNIFIED.nc")]
-        NC_3D[("EUROPE_TOTAL_3D_TEMP.nc")]
-        NC_DTO[("OBSEA_LOCAL_DTO_3D.nc")]
-    end
-
-    subgraph VISUALIZATION["📊 Scientific Visualization"]
-        direction LR
-        V1["plot_unified_sst.py"]
-        V2["plot_3d_layers.py / profile.py"]
-        V3["plot_obsea_local_dto.py"]
-    end
-
-    ERDDAP[["🌐 ERDDAP Service (Docker)"]]
-
-    %% Connections
-    SOURCES --> Fetch
-    Fetch --> Mesh2D
-    Fetch --> Mesh3D
-    Mesh3D --> DTO
-
-    Mesh2D --> NC_SST
-    Mesh3D --> NC_3D
-    DTO --> NC_DTO
-
-    NC_SST --> V1
-    NC_3D --> V2
-    NC_DTO --> V3
-
-    NC_SST & NC_3D & NC_DTO --> ERDDAP
-```
+![System Architecture](workflow_scientific.svg)
 
 > **Hierarchical Mosaic Logic**: IBI (highest priority, 2.5 km) fills cells first. MEDSEA covers the remaining Mediterranean. GLO serves as a full-domain fallback. This guarantees that OBSEA always receives the highest-resolution model available.
 
