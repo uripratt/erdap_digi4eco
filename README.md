@@ -15,71 +15,54 @@ The project extends the [Axiom docker-erddap](https://hub.docker.com/r/axiom/doc
 
 ```mermaid
 graph TD
-    subgraph CMEMS["☁️ Copernicus CMEMS Sources"]
-        IBI["IBI Model<br/>2.5 km | Priority 1"]
-        MED["MEDSEA Model<br/>4.2 km | Priority 2"]
-        GLO["Global Fallback<br/>9 km | Priority 3"]
-        SST["L4 SST Obs<br/>Satélite (1 km)"]
+    subgraph SOURCES["☁️ Copernicus CMEMS Sources"]
+        direction LR
+        IBI["IBI Model<br/>(2.5 km)"]
+        MED["MEDSEA Model<br/>(4.2 km)"]
+        GLO["Global Fallback<br/>(9 km)"]
+        SST["L4 SST Obs<br/>(1 km)"]
     end
 
-    subgraph INGESTION["📥 Data Acquisition"]
-        Fetch["fetch_copernicus.py<br/>CMEMS API Download"]
+    Fetch["📥 fetch_copernicus.py<br/>CMEMS API Download"]
+
+    subgraph PIPELINE["⚙️ Processing Engine (scripts/)"]
+        direction LR
+        Mesh2D["build_mesh.py<br/>(2D SST)"]
+        Mesh3D["build_mesh_3d.py<br/>(3D Temp)"]
+        DTO["build_obsea_local_dto.py<br/>(Local DTO)"]
     end
 
-    %% Columna 1: 2D SST
-    subgraph PROC_2D["⚙️ 2D Mosaic Engine"]
-        Mesh2D["build_mesh.py<br/>2D SST Mosaic (1 km)"]
-    end
-    subgraph DATA_2D["💾 2D Dataset"]
-        SST_NC[("EUROPE_SST_UNIFIED.nc")]
-    end
-    subgraph VIS_2D["📊 SST Visualization"]
-        P1["plot_unified_sst.py<br/>Surface Map"]
+    subgraph DATASETS["💾 Processed Datasets (NetCDF)"]
+        direction LR
+        NC_SST[("EUROPE_SST_UNIFIED.nc")]
+        NC_3D[("EUROPE_TOTAL_3D_TEMP.nc")]
+        NC_DTO[("OBSEA_LOCAL_DTO_3D.nc")]
     end
 
-    %% Columna 2: 3D Temperature
-    subgraph PROC_3D["⚙️ 3D Mesh Engine"]
-        Mesh3D["build_mesh_3d.py<br/>3D Temp Mesh (40 levels)"]
-    end
-    subgraph DATA_3D["💾 3D Dataset"]
-        TEMP3D_NC[("EUROPE_TOTAL_3D_TEMP.nc")]
-    end
-    subgraph VIS_3D["📊 3D Visualization"]
-        P2["plot_3d_layers.py<br/>Layers Collage"]
-        P3["plot_3d_profile.py<br/>Vertical Profile"]
+    subgraph VISUALIZATION["📊 Scientific Visualization"]
+        direction LR
+        V1["plot_unified_sst.py"]
+        V2["plot_3d_layers.py / profile.py"]
+        V3["plot_obsea_local_dto.py"]
     end
 
-    %% Columna 3: Local DTO
-    subgraph PROC_DTO["⚙️ Local Digital Twin"]
-        DTO["build_obsea_local_dto.py<br/>Local DTO (~200 m)"]
-    end
-    subgraph DATA_DTO["💾 DTO Dataset"]
-        DTO_NC[("OBSEA_LOCAL_DTO_3D.nc")]
-    end
-    subgraph VIS_DTO["📊 DTO Visualization"]
-        P5["plot_obsea_local_dto.py<br/>High-Res Map"]
-    end
+    ERDDAP[["🌐 ERDDAP Service (Docker)"]]
 
-    subgraph ERDDAP_SVC["🌐 ERDDAP Service (Docker)"]
-        DS["Unified Datasets<br/>REST API / NetCDF"]
-    end
-
-    %% Conexiones
-    IBI & MED & GLO & SST --> Fetch
-    
+    %% Connections
+    SOURCES --> Fetch
     Fetch --> Mesh2D
     Fetch --> Mesh3D
     Mesh3D --> DTO
 
-    Mesh2D --> SST_NC
-    Mesh3D --> TEMP3D_NC
-    DTO --> DTO_NC
+    Mesh2D --> NC_SST
+    Mesh3D --> NC_3D
+    DTO --> NC_DTO
 
-    SST_NC --> P1
-    TEMP3D_NC --> P2 & P3
-    DTO_NC --> P5
+    NC_SST --> V1
+    NC_3D --> V2
+    NC_DTO --> V3
 
-    SST_NC & TEMP3D_NC & DTO_NC --> DS
+    NC_SST & NC_3D & NC_DTO --> ERDDAP
 ```
 
 > **Hierarchical Mosaic Logic**: IBI (highest priority, 2.5 km) fills cells first. MEDSEA covers the remaining Mediterranean. GLO serves as a full-domain fallback. This guarantees that OBSEA always receives the highest-resolution model available.
