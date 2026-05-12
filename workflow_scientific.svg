@@ -49,7 +49,7 @@
 
   <!-- BLOCK 3: PROCESSING ENGINE -->
   <rect x="50" y="330" width="1100" height="120" rx="10" fill="#f1f3f5" stroke="#adb5bd" stroke-width="1" stroke-dasharray="5,5" />
-  <text x="210" y="355" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="start" fill="#495057">⚙️ Processing Engine (scripts/)</text>
+  <text x="250" y="355" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="start" fill="#495057">⚙️ Processing Engine (scripts/)</text>
 
   <g transform="translate(100, 370)">
     <rect x="0" y="0" width="250" height="60" rx="5" fill="#dee2e6" stroke="#333" stroke-width="1.2" />
@@ -69,7 +69,7 @@
 
   <!-- BLOCK 4: DATASETS -->
   <rect x="50" y="490" width="1100" height="100" rx="10" fill="#ffffff" stroke="#007bff" stroke-width="1" stroke-dasharray="5,3" />
-  <text x="210" y="515" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="start" fill="#007bff">💾 Processed Datasets (NetCDF)</text>
+  <text x="250" y="515" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="start" fill="#007bff">💾 Processed Datasets (NetCDF)</text>
 
   <g transform="translate(100, 530)">
     <rect x="0" y="0" width="250" height="40" rx="5" fill="#e7f1ff" stroke="#007bff" stroke-width="1.2" />
@@ -86,7 +86,7 @@
 
   <!-- BLOCK 5: VISUALIZATION -->
   <rect x="50" y="630" width="1100" height="120" rx="10" fill="#fff9db" stroke="#fab005" stroke-width="1" stroke-dasharray="5,5" />
-  <text x="210" y="655" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="start" fill="#862e17">📊 Scientific Visualization</text>
+  <text x="250" y="655" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="start" fill="#862e17">📊 Scientific Visualization</text>
 
   <g transform="translate(100, 670)">
     <rect x="0" y="0" width="250" height="60" rx="5" fill="#ffffff" stroke="#fab005" stroke-width="1.2" filter="url(#shadow)" />
@@ -137,9 +137,12 @@
   <line x1="600" y1="570" x2="600" y2="668" stroke="#444" stroke-width="1.5" marker-end="url(#arrowhead)" />
   <line x1="975" y1="570" x2="975" y2="668" stroke="#444" stroke-width="1.5" marker-end="url(#arrowhead)" />
 
-  <!-- Datasets to ERDDAP -->
-  <path d="M225,570 L225,780 L500,780 L500,818" fill="none" stroke="#007bff" stroke-width="1.2" stroke-dasharray="4,2" marker-end="url(#arrowhead)" />
-  <line x1="600" y1="570" x2="600" y2="818" stroke="#007bff" stroke-width="1.2" stroke-dasharray="4,2" marker-end="url(#arrowhead)" />
-  <path d="M975,570 L975,780 L700,780 L700,818" fill="none" stroke="#007bff" stroke-width="1.2" stroke-dasharray="4,2" marker-end="url(#arrowhead)" />
+  <!-- Final Dashed Arrows to ERDDAP (Starting from Visualization blocks) -->
+  <!-- Col 1: Vis to ERDDAP -->
+  <path d="M225,730 L225,790 L500,790 L500,818" fill="none" stroke="#007bff" stroke-width="1.2" stroke-dasharray="4,2" marker-end="url(#arrowhead)" />
+  <!-- Col 2: Vis to ERDDAP -->
+  <line x1="600" y1="730" x2="600" y2="818" stroke="#007bff" stroke-width="1.2" stroke-dasharray="4,2" marker-end="url(#arrowhead)" />
+  <!-- Col 3: Vis to ERDDAP -->
+  <path d="M975,730 L975,790 L700,790 L700,818" fill="none" stroke="#007bff" stroke-width="1.2" stroke-dasharray="4,2" marker-end="url(#arrowhead)" />
 
 </svg>
