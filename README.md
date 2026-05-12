@@ -16,50 +16,70 @@ The project extends the [Axiom docker-erddap](https://hub.docker.com/r/axiom/doc
 ```mermaid
 graph TD
     subgraph CMEMS["☁️ Copernicus CMEMS Sources"]
-        IBI["IBI Model<br/>2.5 km | Priority 1<br/>thetao (3D)"]
-        MED["MEDSEA Model<br/>4.2 km | Priority 2<br/>thetao (3D)"]
-        GLO["Global Fallback<br/>9 km | Priority 3<br/>thetao + SST"]
-        SST["L4 SST Obs<br/>Med / Atl / Bal / BS"]
+        IBI["IBI Model<br/>2.5 km | Priority 1"]
+        MED["MEDSEA Model<br/>4.2 km | Priority 2"]
+        GLO["Global Fallback<br/>9 km | Priority 3"]
+        SST["L4 SST Obs<br/>Satélite (1 km)"]
     end
 
-    subgraph PIPELINE["⚙️ Python Processing Pipeline"]
-        Fetch["fetch_copernicus.py<br/>─────────────────<br/>CMEMS API Download<br/>Domain: −12→43°E | 29→73°N"]
-        Mesh2D["build_mesh.py<br/>─────────────────<br/>2D SST Mosaic (1 km)"]
-        Mesh3D["build_mesh_3d.py<br/>─────────────────<br/>3D Temp Mesh (40 levels)<br/>1.02 m → 294 m"]
-        DTO["build_obsea_local_dto.py<br/>─────────────────<br/>Local DTO (~200 m)<br/>OBSEA Domain"]
+    subgraph INGESTION["📥 Data Acquisition"]
+        Fetch["fetch_copernicus.py<br/>CMEMS API Download"]
     end
 
-    subgraph DATA["💾 Processed Datasets"]
+    %% Columna 1: 2D SST
+    subgraph PROC_2D["⚙️ 2D Mosaic Engine"]
+        Mesh2D["build_mesh.py<br/>2D SST Mosaic (1 km)"]
+    end
+    subgraph DATA_2D["💾 2D Dataset"]
         SST_NC[("EUROPE_SST_UNIFIED.nc")]
+    end
+    subgraph VIS_2D["📊 SST Visualization"]
+        P1["plot_unified_sst.py<br/>Surface Map"]
+    end
+
+    %% Columna 2: 3D Temperature
+    subgraph PROC_3D["⚙️ 3D Mesh Engine"]
+        Mesh3D["build_mesh_3d.py<br/>3D Temp Mesh (40 levels)"]
+    end
+    subgraph DATA_3D["💾 3D Dataset"]
         TEMP3D_NC[("EUROPE_TOTAL_3D_TEMP.nc")]
+    end
+    subgraph VIS_3D["📊 3D Visualization"]
+        P2["plot_3d_layers.py<br/>Layers Collage"]
+        P3["plot_3d_profile.py<br/>Vertical Profile"]
+    end
+
+    %% Columna 3: Local DTO
+    subgraph PROC_DTO["⚙️ Local Digital Twin"]
+        DTO["build_obsea_local_dto.py<br/>Local DTO (~200 m)"]
+    end
+    subgraph DATA_DTO["💾 DTO Dataset"]
         DTO_NC[("OBSEA_LOCAL_DTO_3D.nc")]
     end
-
-    subgraph VIS["📊 Scientific Visualization Suite"]
-        P1["plot_unified_sst.py<br/>Surface Map"]
-        P2["plot_3d_layers.py<br/>3×3 Native Layer Collage"]
-        P3["plot_3d_profile.py<br/>Vertical Profile at OBSEA"]
-        P4["plot_raw_comparison.py<br/>IBI vs MEDSEA Diff"]
-        P5["plot_obsea_local_dto.py<br/>High-Res Local Map"]
+    subgraph VIS_DTO["📊 DTO Visualization"]
+        P5["plot_obsea_local_dto.py<br/>High-Res Map"]
     end
 
     subgraph ERDDAP_SVC["🌐 ERDDAP Service (Docker)"]
-        DS1["unified_europe_sst"]
-        DS2["unified_europe_3d"]
-        DS3["obsea_local_dto"]
+        DS["Unified Datasets<br/>REST API / NetCDF"]
     end
 
-    IBI & MED & GLO --> Fetch
-    SST --> Fetch
+    %% Conexiones
+    IBI & MED & GLO & SST --> Fetch
+    
     Fetch --> Mesh2D
     Fetch --> Mesh3D
     Mesh3D --> DTO
+
     Mesh2D --> SST_NC
     Mesh3D --> TEMP3D_NC
     DTO --> DTO_NC
-    SST_NC --> P1 & DS1
-    TEMP3D_NC --> P2 & P3 & P4 & DS2
-    DTO_NC --> P5 & DS3
+
+    SST_NC --> P1
+    TEMP3D_NC --> P2 & P3
+    DTO_NC --> P5
+
+    SST_NC & TEMP3D_NC & DTO_NC --> DS
 ```
 
 > **Hierarchical Mosaic Logic**: IBI (highest priority, 2.5 km) fills cells first. MEDSEA covers the remaining Mediterranean. GLO serves as a full-domain fallback. This guarantees that OBSEA always receives the highest-resolution model available.
