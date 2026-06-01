@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DEGI4ECO Scientific Synthesis</title>
+    <style>
+        :root {
+            --primary: #128CB5;
+            --secondary: #0d6d8c;
+            --text: #333;
+            --bg: #f4f7f6;
+        }
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px;
+            background: white;
+        }
+        header {
+            text-align: center;
+            border-bottom: 3px solid var(--primary);
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+        }
+        h1 { color: var(--primary); margin-bottom: 10px; font-size: 2.2em; }
+        h2 { color: var(--secondary); border-left: 5px solid var(--primary); padding-left: 15px; margin-top: 30px; }
+        h3 { color: #555; }
+        .subtitle { font-size: 1.2em; color: #666; font-style: italic; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.9em; }
+        th { background: var(--primary); color: white; padding: 12px; text-align: left; }
+        td { border: 1px solid #ddd; padding: 10px; }
+        tr:nth-child(even) { background: #f9f9f9; }
+        .highlight { background: #eef9ff; border-radius: 8px; padding: 20px; border: 1px solid #b3e5fc; margin: 20px 0; }
+        .footer { margin-top: 50px; text-align: center; font-size: 0.8em; color: #999; border-top: 1px solid #eee; padding-top: 20px; }
+        @media print {
+            body { padding: 0; }
+            .no-print { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>DEGI4ECO: Unified Digital Twin Ocean</h1>
+        <div class="subtitle">Scientific Project Synthesis & Technical Architecture</div>
+    </header>
+
+    <section>
+        <h2>1. Project Vision</h2>
+        <p>The DEGI4ECO project establishes a production-grade oceanographic data pipeline that harmonizes heterogeneous satellite and model sources (CMEMS) into a unified 12-dataset Digital Twin Ocean (DTO) catalog. The system delivers high-fidelity representations of European seas, transitioning from fragmented daily snapshots to consolidated monthly NetCDF volumes.</p>
+    </section>
+
+    <section>
+        <h2>2. Technical Architecture</h2>
+        <p>The pipeline utilizes a modular <strong>Python-Xarray-Dask</strong> stack designed for high-performance computing on oceanographic datasets.</p>
+        <div class="highlight">
+            <strong>Key Innovation:</strong> Implementation of a <em>Lazy-Evaluation</em> mesh engine with <em>Spatial Clipping</em>. This allows processing 5+ years of 3D high-resolution data without exceeding system memory limits.
+        </div>
+    </section>
+
+    <section>
+        <h2>3. Production Catalog (ERDDAP)</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Variable</th>
+                    <th>Resolution</th>
+                    <th>Logic</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>2D Native</td><td>SST / CHL</td><td>1 km</td><td>L4 Mosaic (CMEMS)</td></tr>
+                <tr><td>2D Native</td><td>Waves</td><td>4 km</td><td>MED WAV native</td></tr>
+                <tr><td>2D Surface</td><td>Temp/Sal/Cur</td><td>~3 km</td><td>3D Surface Extraction</td></tr>
+                <tr><td>3D Europe</td><td>Temp/Sal/Cur</td><td>5 km</td><td>40 Native Levels</td></tr>
+                <tr><td>3D OBSEA</td><td>Temp/Sal/Cur</td><td>200 m</td><td>1m Vertical Mesh</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section>
+        <h2>4. Scientific Provenance</h2>
+        <p>All datasets include a <code>status_mask</code> to ensure transparency in scientific communications:</p>
+        <ul>
+            <li><strong>Value 1:</strong> Native data within the original Copernicus model domain.</li>
+            <li><strong>Value 2:</strong> Extrapolated data using nearest-neighbor algorithms to provide coverage in complex coastal interfaces.</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>5. The OBSEA Digital Twin Case Study</h2>
+        <p>The OBSEA DTO provides ultra-high resolution (200m horizontal) synchronized with EMODnet bathymetry. The water column is subdivided into 1-meter vertical steps (1m to 50m), enabling seamless integration with in-situ sensor data and acoustic profilers.</p>
+    </section>
+
+    <div class="footer">
+        SARTI-UPC | EMSO ERIC | DEGI4ECO Project 2026<br>
+        <em>Generated for Scientific Presentation Purposes</em>
+    </div>
+</body>
+</html>

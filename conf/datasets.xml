@@ -122,258 +122,344 @@ ERDDAP follows
 another.name@company.com, *@example.com</subscriptionEmailBlacklist>
 
 
-<dataset type="EDDTableFromMultidimNcFiles" datasetID="DummyData" active="true">
- <reloadEveryNMinutes>10080</reloadEveryNMinutes>
- <updateEveryNMillis>10000</updateEveryNMillis>
- <fileDir>/datasets/DummyData</fileDir>
- <fileNameRegex>.*</fileNameRegex>
- <recursive>true</recursive>
- <pathRegex>.*</pathRegex>
- <metadataFrom>last</metadataFrom>
- <standardizeWhat>0</standardizeWhat>
- <removeMVRows>true</removeMVRows>
- <sortFilesBySourceNames/>
- <fileTableInMemory>false</fileTableInMemory>
- <addAttributes>
-  <att name="_NCProperties">null</att>
-  <att name="cdm_data_type">Point</att>
-  <att name="infoUrl">https://edmo.seadatanet.org/report/2150</att>
-  <att name="sourceUrl">(local files)</att>
-  <att name="standard_name_vocabulary">CF Standard Name Table v70</att>
-  <att name="subsetVariables">latitude_QC, longitude_QC</att>
- </addAttributes>
- <dataVariable>
-  <sourceName>TIME</sourceName>
-  <destinationName>time</destinationName>
-  <dataType>double</dataType>
-  <addAttributes>
-   <att name="units">seconds since 1970-01-01</att>
-   <att name="time_precision">1970-01-01T00:00:00Z</att>
-  </addAttributes>
- </dataVariable>
- <dataVariable>
-  <sourceName>LATITUDE</sourceName>
-  <destinationName>latitude</destinationName>
-  <dataType>float</dataType>
-  <addAttributes/>
- </dataVariable>
- <dataVariable>
-  <sourceName>LONGITUDE</sourceName>
-  <destinationName>longitude</destinationName>
-  <dataType>float</dataType>
-  <addAttributes/>
- </dataVariable>
- <dataVariable>
-  <sourceName>DEPTH</sourceName>
-  <destinationName>depth</destinationName>
-  <dataType>float</dataType>
-  <addAttributes>
-   <att name="units">m</att>
-  </addAttributes>
- </dataVariable>
- <dataVariable>
-  <sourceName>TEMP</sourceName>
-  <destinationName>TEMP</destinationName>
-  <dataType>float</dataType>
-  <addAttributes/>
- </dataVariable>
- <dataVariable>
-  <sourceName>CNDC</sourceName>
-  <destinationName>CNDC</destinationName>
-  <dataType>float</dataType>
-  <addAttributes/>
- </dataVariable>
- <dataVariable>
-  <sourceName>LATITUDE_QC</sourceName>
-  <destinationName>latitude_QC</destinationName>
-  <dataType>byte</dataType>
-  <addAttributes/>
- </dataVariable>
- <dataVariable>
-  <sourceName>LONGITUDE_QC</sourceName>
-  <destinationName>longitude_QC</destinationName>
-  <dataType>byte</dataType>
-  <addAttributes/>
- </dataVariable>
-</dataset>
 
-<dataset type="EDDGridFromNcFiles" datasetID="copernicus_sst_med" active="true">
-  <reloadEveryNMinutes>10080</reloadEveryNMinutes>
-  <updateEveryNMillis>10000</updateEveryNMillis>
-  <fileDir>/datasets/MedSea/</fileDir>
-  <fileNameRegex>.*</fileNameRegex>
-  <recursive>true</recursive>
-  <pathRegex>.*</pathRegex>
-  <metadataFrom>last</metadataFrom>
-  <matchAxisNDigits>20</matchAxisNDigits>
-  <fileTableInMemory>false</fileTableInMemory>
+<!-- ============================================================ -->
+<!-- GROUP A: 2D EUROPE PRODUCTS                                   -->
+<!-- ============================================================ -->
 
-  <addAttributes>
-    <att name="title">Copernicus SST Mediterranean L4</att>
-    <att name="infoUrl">https://marine.copernicus.eu/</att>
-    <att name="institution">Copernicus Marine Service</att>
-    <att name="summary">Sea Surface Temperature Analysis for the Mediterranean Sea. This dataset provides high-resolution daily sea surface temperature.</att>
-    <att name="cdm_data_type">Grid</att>
-    <att name="sourceUrl">(local files)</att>
-  </addAttributes>
-
-  <axisVariable>
-    <sourceName>time</sourceName>
-    <destinationName>time</destinationName>
-    <addAttributes />
-  </axisVariable>
-
-  <axisVariable>
-    <sourceName>lat</sourceName>
-    <destinationName>latitude</destinationName>
-    <addAttributes />
-  </axisVariable>
-
-  <axisVariable>
-    <sourceName>lon</sourceName>
-    <destinationName>longitude</destinationName>
-    <addAttributes />
-  </axisVariable>
-
-  <dataVariable>
-    <sourceName>analysed_sst</sourceName>
-    <destinationName>sst</destinationName>
-    <dataType>double</dataType>
-    <addAttributes/>
-  </dataVariable>
-</dataset>
-
-
+<!-- 1. SST - 1km native L4 -->
 <dataset type="EDDGridFromNcFiles" datasetID="unified_europe_sst" active="true">
-    <reloadEveryNMinutes>10080</reloadEveryNMinutes>
+    <reloadEveryNMinutes>1440</reloadEveryNMinutes>
     <updateEveryNMillis>10000</updateEveryNMillis>
     <fileDir>/datasets/unified_europe_sst/</fileDir>
-    <fileNameRegex>.*\.nc</fileNameRegex>
-    <recursive>true</recursive>
-    <pathRegex>.*</pathRegex>
+    <fileNameRegex>EUROPE_TOTAL_1KM_sst_\d{6,8}(_\d{2})?\.nc</fileNameRegex>
+    <recursive>false</recursive>
     <metadataFrom>last</metadataFrom>
     <matchAxisNDigits>20</matchAxisNDigits>
     <fileTableInMemory>false</fileTableInMemory>
-
+    <accessibleViaFiles>true</accessibleViaFiles>
     <addAttributes>
-        <att name="title">Unified European & North Atlantic SST High-Resolution Mosaic</att>
-        <att name="infoUrl">https://marine.copernicus.eu/</att>
+        <att name="title">Unified Europe SST - 1km (MED/ATL/BAL/BS L4 Mosaic)</att>
         <att name="institution">SARTI - DEGI4ECO Project</att>
-        <att name="summary">Unified 1km resolution SST map combining Mediterranean, Baltic, Black Sea, and Atlantic L4 Copernicus products, with Global OSTIA fallback for full coverage (29N-73N, 12W-44E).</att>
+        <att name="infoUrl">https://sarti.upc.edu/degi4eco</att>
+        <att name="summary">Monthly SST at 1km native resolution. Sources: CMEMS MED, ATL, BAL, BS L4 + OSTIA fallback.</att>
         <att name="cdm_data_type">Grid</att>
         <att name="sourceUrl">(local files)</att>
     </addAttributes>
-
     <axisVariable><sourceName>time</sourceName><destinationName>time</destinationName><addAttributes/></axisVariable>
     <axisVariable><sourceName>lat</sourceName><destinationName>latitude</destinationName><addAttributes/></axisVariable>
     <axisVariable><sourceName>lon</sourceName><destinationName>longitude</destinationName><addAttributes/></axisVariable>
-
     <dataVariable>
-        <sourceName>sst</sourceName>
-        <destinationName>sst</destinationName>
-        <dataType>double</dataType>
-        <addAttributes>
-            <att name="units">degree_Celsius</att>
-            <att name="colorBarMinimum" type="double">0.0</att>
-            <att name="colorBarMaximum" type="double">35.0</att>
-        </addAttributes>
+        <sourceName>analysed_sst</sourceName><destinationName>sst</destinationName><dataType>float</dataType>
+        <addAttributes><att name="units">degree_Celsius</att><att name="colorBarMinimum" type="double">0.0</att><att name="colorBarMaximum" type="double">35.0</att><att name="colorBarPalette">KT_thermal</att></addAttributes>
     </dataVariable>
 </dataset>
 
-
-<dataset type="EDDGridFromNcFiles" datasetID="unified_europe_3d" active="true">
-    <reloadEveryNMinutes>10080</reloadEveryNMinutes>
+<!-- 2. CHL - 1km native OC -->
+<dataset type="EDDGridFromNcFiles" datasetID="unified_europe_chl" active="true">
+    <reloadEveryNMinutes>1440</reloadEveryNMinutes>
     <updateEveryNMillis>10000</updateEveryNMillis>
-    <fileDir>/datasets/unified_europe_3d/</fileDir>
-    <fileNameRegex>.*\.nc</fileNameRegex>
-    <recursive>true</recursive>
-    <pathRegex>.*</pathRegex>
+    <fileDir>/datasets/unified_europe_chl/</fileDir>
+    <fileNameRegex>EUROPE_TOTAL_1KM_chl_\d{6,8}(_\d{2})?\.nc</fileNameRegex>
+    <recursive>false</recursive>
     <metadataFrom>last</metadataFrom>
     <matchAxisNDigits>20</matchAxisNDigits>
     <fileTableInMemory>false</fileTableInMemory>
-
+    <accessibleViaFiles>true</accessibleViaFiles>
     <addAttributes>
-        <att name="title">Unified European & North Atlantic 3D Temperature (40 levels)</att>
-        <att name="infoUrl">https://marine.copernicus.eu/</att>
+        <att name="title">Unified Europe Chlorophyll-a - 1km (MED/ATL/BS OC Mosaic)</att>
         <att name="institution">SARTI - DEGI4ECO Project</att>
-        <att name="summary">Unified 3D temperature dataset combining IBI and MEDSEA models into a 40-level mesh (1m to 294m nominal depth) with fine vertical resolution for coastal profiling.</att>
+        <att name="infoUrl">https://sarti.upc.edu/degi4eco</att>
+        <att name="summary">Monthly CHL at 1km native resolution. Sources: CMEMS MED, ATL, BS OC L4.</att>
         <att name="cdm_data_type">Grid</att>
         <att name="sourceUrl">(local files)</att>
     </addAttributes>
+    <axisVariable><sourceName>time</sourceName><destinationName>time</destinationName><addAttributes/></axisVariable>
+    <axisVariable><sourceName>lat</sourceName><destinationName>latitude</destinationName><addAttributes/></axisVariable>
+    <axisVariable><sourceName>lon</sourceName><destinationName>longitude</destinationName><addAttributes/></axisVariable>
+    <dataVariable>
+        <sourceName>CHL</sourceName><destinationName>chl</destinationName><dataType>float</dataType>
+        <addAttributes><att name="units">mg m-3</att><att name="colorBarMinimum" type="double">0.0</att><att name="colorBarMaximum" type="double">10.0</att><att name="colorBarPalette">KT_algae</att></addAttributes>
+    </dataVariable>
+</dataset>
 
+<!-- 3. WAVES - 4km native MED WAV -->
+<dataset type="EDDGridFromNcFiles" datasetID="unified_europe_waves" active="true">
+    <reloadEveryNMinutes>1440</reloadEveryNMinutes>
+    <updateEveryNMillis>10000</updateEveryNMillis>
+    <fileDir>/datasets/unified_europe_waves/</fileDir>
+    <fileNameRegex>EUROPE_TOTAL_4KM_waves_\d{6,8}(_\d{2})?\.nc</fileNameRegex>
+    <recursive>false</recursive>
+    <metadataFrom>last</metadataFrom>
+    <matchAxisNDigits>20</matchAxisNDigits>
+    <fileTableInMemory>false</fileTableInMemory>
+    <accessibleViaFiles>true</accessibleViaFiles>
+    <addAttributes>
+        <att name="title">Unified Europe Waves - 4km (MED/BS/GLO Mosaic)</att>
+        <att name="institution">SARTI - DEGI4ECO Project</att>
+        <att name="infoUrl">https://sarti.upc.edu/degi4eco</att>
+        <att name="summary">Monthly wave heights and directions at 4km native resolution.</att>
+        <att name="cdm_data_type">Grid</att>
+        <att name="sourceUrl">(local files)</att>
+    </addAttributes>
+    <axisVariable><sourceName>time</sourceName><destinationName>time</destinationName><addAttributes/></axisVariable>
+    <axisVariable><sourceName>lat</sourceName><destinationName>latitude</destinationName><addAttributes/></axisVariable>
+    <axisVariable><sourceName>lon</sourceName><destinationName>longitude</destinationName><addAttributes/></axisVariable>
+    <dataVariable><sourceName>VHM0</sourceName><destinationName>wave_height</destinationName><dataType>float</dataType><addAttributes><att name="units">m</att><att name="colorBarPalette">KT_amp</att></addAttributes></dataVariable>
+    <dataVariable><sourceName>VMDR</sourceName><destinationName>wave_direction</destinationName><dataType>float</dataType><addAttributes><att name="units">degree</att><att name="colorBarPalette">KT_phase</att></addAttributes></dataVariable>
+    <dataVariable><sourceName>VTPK</sourceName><destinationName>wave_period</destinationName><dataType>float</dataType><addAttributes><att name="units">s</att><att name="colorBarPalette">KT_tempo</att></addAttributes></dataVariable>
+</dataset>
+
+<!-- 4. TEMP surface - 3km (IBI native, extracted from 3D) -->
+<dataset type="EDDGridFromNcFiles" datasetID="unified_europe_temp_surface" active="false">
+    <reloadEveryNMinutes>1440</reloadEveryNMinutes>
+    <updateEveryNMillis>10000</updateEveryNMillis>
+    <fileDir>/datasets/unified_europe_temp_3d_surface/</fileDir>
+    <fileNameRegex>EUROPE_TOTAL_3KM_temp_3d_surface_\d{6,8}(_\d{2})?\.nc</fileNameRegex>
+    <recursive>false</recursive>
+    <metadataFrom>last</metadataFrom>
+    <matchAxisNDigits>20</matchAxisNDigits>
+    <fileTableInMemory>false</fileTableInMemory>
+    <accessibleViaFiles>true</accessibleViaFiles>
+    <addAttributes>
+        <att name="title">Unified Europe Sea Surface Temperature - 3km (IBI/MEDSEA surface)</att>
+        <att name="institution">SARTI - DEGI4ECO Project</att>
+        <att name="infoUrl">https://sarti.upc.edu/degi4eco</att>
+        <att name="summary">Monthly SST at 3km extracted from IBI/MEDSEA 3D models (depth=0).</att>
+        <att name="cdm_data_type">Grid</att>
+        <att name="sourceUrl">(local files)</att>
+    </addAttributes>
+    <axisVariable><sourceName>time</sourceName><destinationName>time</destinationName><addAttributes/></axisVariable>
+    <axisVariable><sourceName>lat</sourceName><destinationName>latitude</destinationName><addAttributes/></axisVariable>
+    <axisVariable><sourceName>lon</sourceName><destinationName>longitude</destinationName><addAttributes/></axisVariable>
+    <dataVariable><sourceName>thetao</sourceName><destinationName>thetao</destinationName><dataType>float</dataType><addAttributes><att name="units">degree_Celsius</att><att name="colorBarPalette">KT_thermal</att></addAttributes></dataVariable>
+</dataset>
+
+<!-- 5. SAL surface - 3km (IBI native) -->
+<dataset type="EDDGridFromNcFiles" datasetID="unified_europe_sal_surface" active="false">
+    <reloadEveryNMinutes>1440</reloadEveryNMinutes>
+    <updateEveryNMillis>10000</updateEveryNMillis>
+    <fileDir>/datasets/unified_europe_sal_surface/</fileDir>
+    <fileNameRegex>EUROPE_TOTAL_3KM_sal_surface_\d{6,8}(_\d{2})?\.nc</fileNameRegex>
+    <recursive>false</recursive>
+    <metadataFrom>last</metadataFrom>
+    <matchAxisNDigits>20</matchAxisNDigits>
+    <fileTableInMemory>false</fileTableInMemory>
+    <accessibleViaFiles>true</accessibleViaFiles>
+    <addAttributes>
+        <att name="title">Unified Europe Sea Surface Salinity - 3km (IBI/MEDSEA surface)</att>
+        <att name="institution">SARTI - DEGI4ECO Project</att>
+        <att name="infoUrl">https://sarti.upc.edu/degi4eco</att>
+        <att name="summary">Monthly Sea Surface Salinity at 3km extracted from IBI/MEDSEA 3D models (depth=0).</att>
+        <att name="cdm_data_type">Grid</att>
+        <att name="sourceUrl">(local files)</att>
+    </addAttributes>
+    <axisVariable><sourceName>time</sourceName><destinationName>time</destinationName><addAttributes/></axisVariable>
+    <axisVariable><sourceName>lat</sourceName><destinationName>latitude</destinationName><addAttributes/></axisVariable>
+    <axisVariable><sourceName>lon</sourceName><destinationName>longitude</destinationName><addAttributes/></axisVariable>
+    <dataVariable><sourceName>so</sourceName><destinationName>so</destinationName><dataType>float</dataType><addAttributes><att name="units">psu</att><att name="colorBarPalette">KT_haline</att></addAttributes></dataVariable>
+</dataset>
+
+<!-- 6. CUR surface - 3km (IBI native) -->
+<dataset type="EDDGridFromNcFiles" datasetID="unified_europe_cur_surface" active="false">
+    <reloadEveryNMinutes>1440</reloadEveryNMinutes>
+    <updateEveryNMillis>10000</updateEveryNMillis>
+    <fileDir>/datasets/unified_europe_cur_surface/</fileDir>
+    <fileNameRegex>EUROPE_TOTAL_3KM_cur_surface_\d{6,8}(_\d{2})?\.nc</fileNameRegex>
+    <recursive>false</recursive>
+    <metadataFrom>last</metadataFrom>
+    <matchAxisNDigits>20</matchAxisNDigits>
+    <fileTableInMemory>false</fileTableInMemory>
+    <accessibleViaFiles>true</accessibleViaFiles>
+    <addAttributes>
+        <att name="title">Unified Europe Sea Surface Currents - 3km (IBI/MEDSEA surface)</att>
+        <att name="institution">SARTI - DEGI4ECO Project</att>
+        <att name="infoUrl">https://sarti.upc.edu/degi4eco</att>
+        <att name="summary">Monthly Sea Surface Currents at 3km extracted from IBI/MEDSEA 3D models (depth=0).</att>
+        <att name="cdm_data_type">Grid</att>
+        <att name="sourceUrl">(local files)</att>
+    </addAttributes>
+    <axisVariable><sourceName>time</sourceName><destinationName>time</destinationName><addAttributes/></axisVariable>
+    <axisVariable><sourceName>lat</sourceName><destinationName>latitude</destinationName><addAttributes/></axisVariable>
+    <axisVariable><sourceName>lon</sourceName><destinationName>longitude</destinationName><addAttributes/></axisVariable>
+    <dataVariable><sourceName>uo</sourceName><destinationName>uo</destinationName><dataType>float</dataType><addAttributes><att name="units">m s-1</att><att name="colorBarPalette">KT_balance</att></addAttributes></dataVariable>
+    <dataVariable><sourceName>vo</sourceName><destinationName>vo</destinationName><dataType>float</dataType><addAttributes><att name="units">m s-1</att><att name="colorBarPalette">KT_balance</att></addAttributes></dataVariable>
+    <dataVariable><sourceName>speed</sourceName><destinationName>speed</destinationName><dataType>float</dataType><addAttributes><att name="units">m s-1</att><att name="colorBarPalette">KT_speed</att></addAttributes></dataVariable>
+</dataset>
+
+<!-- ============================================================ -->
+<!-- GROUP B: 3D EUROPE VOLUMES (5km, 40 native Copernicus levels) -->
+<!-- ============================================================ -->
+
+<!-- 7. TEMP 3D Europe - 5km -->
+<dataset type="EDDGridFromNcFiles" datasetID="unified_europe_temp_3d" active="false">
+    <reloadEveryNMinutes>1440</reloadEveryNMinutes>
+    <updateEveryNMillis>10000</updateEveryNMillis>
+    <fileDir>/datasets/unified_europe_temp_3d/</fileDir>
+    <fileNameRegex>EUROPE_TOTAL_5KM_3D_temp_3d_\d{6,8}(_\d{2})?\.nc</fileNameRegex>
+    <recursive>false</recursive>
+    <metadataFrom>last</metadataFrom>
+    <matchAxisNDigits>20</matchAxisNDigits>
+    <fileTableInMemory>false</fileTableInMemory>
+    <accessibleViaFiles>true</accessibleViaFiles>
+    <addAttributes>
+        <att name="title">Unified Europe 3D Temperature - 5km, 40 levels (IBI/MEDSEA)</att>
+        <att name="institution">SARTI - DEGI4ECO Project</att>
+        <att name="infoUrl">https://sarti.upc.edu/degi4eco</att>
+        <att name="summary">Monthly 3D temperature at 5km. 40 native Copernicus depth levels (1m-233m). Includes status_mask provenance variable.</att>
+        <att name="cdm_data_type">Grid</att>
+        <att name="sourceUrl">(local files)</att>
+    </addAttributes>
     <axisVariable><sourceName>time</sourceName><destinationName>time</destinationName><addAttributes/></axisVariable>
     <axisVariable><sourceName>depth</sourceName><destinationName>depth</destinationName><addAttributes><att name="units">m</att></addAttributes></axisVariable>
     <axisVariable><sourceName>lat</sourceName><destinationName>latitude</destinationName><addAttributes/></axisVariable>
     <axisVariable><sourceName>lon</sourceName><destinationName>longitude</destinationName><addAttributes/></axisVariable>
-
-    <dataVariable>
-        <sourceName>temp</sourceName>
-        <destinationName>temp</destinationName>
-        <dataType>double</dataType>
-        <addAttributes>
-            <att name="units">degree_Celsius</att>
-            <att name="colorBarMinimum" type="double">8.0</att>
-            <att name="colorBarMaximum" type="double">24.0</att>
-        </addAttributes>
-    </dataVariable>
+    <dataVariable><sourceName>thetao</sourceName><destinationName>thetao</destinationName><dataType>float</dataType><addAttributes><att name="units">degree_Celsius</att><att name="colorBarPalette">KT_thermal</att></addAttributes></dataVariable>
+    <dataVariable><sourceName>status_mask</sourceName><destinationName>status_mask</destinationName><dataType>byte</dataType><addAttributes><att name="flag_values" type="byteList">0 1 2</att><att name="flag_meanings">no_data native_model extrapolated_coast</att></addAttributes></dataVariable>
 </dataset>
 
-
-<dataset type="EDDGridFromNcFiles" datasetID="obsea_local_dto" active="true">
-    <reloadEveryNMinutes>10080</reloadEveryNMinutes>
+<!-- 8. SAL 3D Europe - 5km -->
+<dataset type="EDDGridFromNcFiles" datasetID="unified_europe_sal_3d" active="false">
+    <reloadEveryNMinutes>1440</reloadEveryNMinutes>
     <updateEveryNMillis>10000</updateEveryNMillis>
-    <fileDir>/datasets/unified_europe_3d/</fileDir>
-    <fileNameRegex>OBSEA_LOCAL_DTO_3D\.nc</fileNameRegex>
-    <recursive>true</recursive>
-    <pathRegex>.*</pathRegex>
+    <fileDir>/datasets/unified_europe_sal/</fileDir>
+    <fileNameRegex>EUROPE_TOTAL_5KM_3D_sal_\d{6,8}(_\d{2})?\.nc</fileNameRegex>
+    <recursive>false</recursive>
     <metadataFrom>last</metadataFrom>
     <matchAxisNDigits>20</matchAxisNDigits>
     <fileTableInMemory>false</fileTableInMemory>
-
+    <accessibleViaFiles>true</accessibleViaFiles>
     <addAttributes>
-        <att name="title">OBSEA Local Digital Twin (DTO) - High Resolution</att>
-        <att name="infoUrl">https://marine.copernicus.eu/</att>
+        <att name="title">Unified Europe 3D Salinity - 5km, 40 levels (IBI/MEDSEA)</att>
         <att name="institution">SARTI - DEGI4ECO Project</att>
-        <att name="summary">High-resolution (200m) local subset of the IBI physical model around the OBSEA observatory. Domain: [1.57-1.9E, 41.15-41.26N].</att>
+        <att name="infoUrl">https://sarti.upc.edu/degi4eco</att>
+        <att name="summary">Monthly 3D Salinity at 5km. 40 native Copernicus depth levels (1m-233m).</att>
         <att name="cdm_data_type">Grid</att>
         <att name="sourceUrl">(local files)</att>
     </addAttributes>
-
     <axisVariable><sourceName>time</sourceName><destinationName>time</destinationName><addAttributes/></axisVariable>
     <axisVariable><sourceName>depth</sourceName><destinationName>depth</destinationName><addAttributes><att name="units">m</att></addAttributes></axisVariable>
     <axisVariable><sourceName>lat</sourceName><destinationName>latitude</destinationName><addAttributes/></axisVariable>
     <axisVariable><sourceName>lon</sourceName><destinationName>longitude</destinationName><addAttributes/></axisVariable>
+    <dataVariable><sourceName>so</sourceName><destinationName>so</destinationName><dataType>float</dataType><addAttributes><att name="units">psu</att><att name="colorBarPalette">KT_haline</att></addAttributes></dataVariable>
+    <dataVariable><sourceName>status_mask</sourceName><destinationName>status_mask</destinationName><dataType>byte</dataType><addAttributes><att name="flag_values" type="byteList">0 1 2</att><att name="flag_meanings">no_data native_model extrapolated_coast</att></addAttributes></dataVariable>
+</dataset>
 
-    <dataVariable>
-        <sourceName>temp</sourceName>
-        <destinationName>temp</destinationName>
-        <dataType>double</dataType>
-        <addAttributes>
-            <att name="units">degree_Celsius</att>
-            <att name="colorBarMinimum" type="double">15.0</att>
-            <att name="colorBarMaximum" type="double">20.0</att>
-        </addAttributes>
-    </dataVariable>
-    <dataVariable>
-        <sourceName>sal</sourceName>
-        <destinationName>sal</destinationName>
-        <dataType>double</dataType>
-        <addAttributes>
-            <att name="units">psu</att>
-            <att name="colorBarMinimum" type="double">37.0</att>
-            <att name="colorBarMaximum" type="double">38.0</att>
-        </addAttributes>
-    </dataVariable>
+<!-- 9. CUR 3D Europe - 5km -->
+<dataset type="EDDGridFromNcFiles" datasetID="unified_europe_cur_3d" active="false">
+    <reloadEveryNMinutes>1440</reloadEveryNMinutes>
+    <updateEveryNMillis>10000</updateEveryNMillis>
+    <fileDir>/datasets/unified_europe_cur/</fileDir>
+    <fileNameRegex>EUROPE_TOTAL_5KM_3D_cur_\d{6,8}(_\d{2})?\.nc</fileNameRegex>
+    <recursive>false</recursive>
+    <metadataFrom>last</metadataFrom>
+    <matchAxisNDigits>20</matchAxisNDigits>
+    <fileTableInMemory>false</fileTableInMemory>
+    <accessibleViaFiles>true</accessibleViaFiles>
+    <addAttributes>
+        <att name="title">Unified Europe 3D Currents - 5km, 40 levels (IBI/MEDSEA)</att>
+        <att name="institution">SARTI - DEGI4ECO Project</att>
+        <att name="infoUrl">https://sarti.upc.edu/degi4eco</att>
+        <att name="summary">Monthly 3D Currents at 5km. 40 native Copernicus depth levels (1m-233m).</att>
+        <att name="cdm_data_type">Grid</att>
+        <att name="sourceUrl">(local files)</att>
+    </addAttributes>
+    <axisVariable><sourceName>time</sourceName><destinationName>time</destinationName><addAttributes/></axisVariable>
+    <axisVariable><sourceName>depth</sourceName><destinationName>depth</destinationName><addAttributes><att name="units">m</att></addAttributes></axisVariable>
+    <axisVariable><sourceName>lat</sourceName><destinationName>latitude</destinationName><addAttributes/></axisVariable>
+    <axisVariable><sourceName>lon</sourceName><destinationName>longitude</destinationName><addAttributes/></axisVariable>
+    <dataVariable><sourceName>uo</sourceName><destinationName>uo</destinationName><dataType>float</dataType><addAttributes><att name="units">m s-1</att><att name="colorBarPalette">KT_balance</att></addAttributes></dataVariable>
+    <dataVariable><sourceName>vo</sourceName><destinationName>vo</destinationName><dataType>float</dataType><addAttributes><att name="units">m s-1</att><att name="colorBarPalette">KT_balance</att></addAttributes></dataVariable>
+    <dataVariable><sourceName>speed</sourceName><destinationName>speed</destinationName><dataType>float</dataType><addAttributes><att name="units">m s-1</att><att name="colorBarPalette">KT_speed</att></addAttributes></dataVariable>
+    <dataVariable><sourceName>status_mask</sourceName><destinationName>status_mask</destinationName><dataType>byte</dataType><addAttributes><att name="flag_values" type="byteList">0 1 2</att><att name="flag_meanings">no_data native_model extrapolated_coast</att></addAttributes></dataVariable>
+</dataset>
 
+<!-- ============================================================ -->
+<!-- GROUP C: OBSEA DTO (200m horiz, 1m vert, bathy-masked)       -->
+<!-- ============================================================ -->
 
-    <dataVariable>
-        <sourceName>pres</sourceName>
-        <destinationName>pres</destinationName>
-        <dataType>double</dataType>
-        <addAttributes>
-            <att name="units">dbar</att>
-        </addAttributes>
-    </dataVariable>
+<!-- 10. OBSEA TEMP DTO - 200m / 50 levels 1m -->
+<dataset type="EDDGridFromNcFiles" datasetID="obsea_local_temp_dto" active="false">
+    <reloadEveryNMinutes>1440</reloadEveryNMinutes>
+    <updateEveryNMillis>10000</updateEveryNMillis>
+    <fileDir>/datasets/unified_europe_temp_3d/</fileDir>
+    <fileNameRegex>OBSEA_LOCAL_0KM_3D_temp_3d_\d{6,8}(_\d{2})?\.nc</fileNameRegex>
+    <recursive>false</recursive>
+    <metadataFrom>last</metadataFrom>
+    <matchAxisNDigits>20</matchAxisNDigits>
+    <fileTableInMemory>false</fileTableInMemory>
+    <accessibleViaFiles>true</accessibleViaFiles>
+    <addAttributes>
+        <att name="title">OBSEA Digital Twin - Temperature 3D (200m, 1m vertical, bathy-masked)</att>
+        <att name="institution">SARTI - DEGI4ECO Project</att>
+        <att name="infoUrl">https://sarti.upc.edu/degi4eco</att>
+        <att name="summary">Ultra-high resolution 3D temperature for OBSEA DTO. 200m horizontal (upsampled x15 from IBI 3km), 50 levels at 1m resolution (1m-50m). Bathymetry-masked using 100m EMODnet. status_mask distinguishes native vs extrapolated data.</att>
+        <att name="cdm_data_type">Grid</att>
+        <att name="sourceUrl">(local files)</att>
+    </addAttributes>
+    <axisVariable><sourceName>time</sourceName><destinationName>time</destinationName><addAttributes/></axisVariable>
+    <axisVariable><sourceName>depth</sourceName><destinationName>depth</destinationName><addAttributes><att name="units">m</att></addAttributes></axisVariable>
+    <axisVariable><sourceName>lat</sourceName><destinationName>latitude</destinationName><addAttributes/></axisVariable>
+    <axisVariable><sourceName>lon</sourceName><destinationName>longitude</destinationName><addAttributes/></axisVariable>
+    <dataVariable><sourceName>thetao</sourceName><destinationName>thetao</destinationName><dataType>float</dataType><addAttributes><att name="units">degree_Celsius</att><att name="colorBarMinimum" type="double">12.0</att><att name="colorBarMaximum" type="double">26.0</att><att name="colorBarPalette">KT_thermal</att></addAttributes></dataVariable>
+    <dataVariable><sourceName>status_mask</sourceName><destinationName>status_mask</destinationName><dataType>byte</dataType><addAttributes><att name="flag_values" type="byteList">0 1 2</att><att name="flag_meanings">no_data native_cmems_3km extrapolated_to_coast</att></addAttributes></dataVariable>
+</dataset>
+
+<!-- 11. OBSEA SAL DTO - 200m / 50 levels 1m -->
+<dataset type="EDDGridFromNcFiles" datasetID="obsea_local_sal_dto" active="false">
+    <reloadEveryNMinutes>1440</reloadEveryNMinutes>
+    <updateEveryNMillis>10000</updateEveryNMillis>
+    <fileDir>/datasets/unified_europe_sal/</fileDir>
+    <fileNameRegex>OBSEA_LOCAL_0KM_3D_sal_\d{6,8}(_\d{2})?\.nc</fileNameRegex>
+    <recursive>false</recursive>
+    <metadataFrom>last</metadataFrom>
+    <matchAxisNDigits>20</matchAxisNDigits>
+    <fileTableInMemory>false</fileTableInMemory>
+    <accessibleViaFiles>true</accessibleViaFiles>
+    <addAttributes>
+        <att name="title">OBSEA Digital Twin - Salinity 3D (200m, 1m vertical, bathy-masked)</att>
+        <att name="institution">SARTI - DEGI4ECO Project</att>
+        <att name="infoUrl">https://sarti.upc.edu/degi4eco</att>
+        <att name="summary">Ultra-high resolution 3D Salinity for OBSEA DTO. 200m horizontal, 50 levels at 1m resolution (1m-50m).</att>
+        <att name="cdm_data_type">Grid</att>
+        <att name="sourceUrl">(local files)</att>
+    </addAttributes>
+    <axisVariable><sourceName>time</sourceName><destinationName>time</destinationName><addAttributes/></axisVariable>
+    <axisVariable><sourceName>depth</sourceName><destinationName>depth</destinationName><addAttributes><att name="units">m</att></addAttributes></axisVariable>
+    <axisVariable><sourceName>lat</sourceName><destinationName>latitude</destinationName><addAttributes/></axisVariable>
+    <axisVariable><sourceName>lon</sourceName><destinationName>longitude</destinationName><addAttributes/></axisVariable>
+    <dataVariable><sourceName>so</sourceName><destinationName>so</destinationName><dataType>float</dataType><addAttributes><att name="units">psu</att><att name="colorBarPalette">KT_haline</att></addAttributes></dataVariable>
+    <dataVariable><sourceName>status_mask</sourceName><destinationName>status_mask</destinationName><dataType>byte</dataType><addAttributes><att name="flag_values" type="byteList">0 1 2</att><att name="flag_meanings">no_data native_cmems_3km extrapolated_to_coast</att></addAttributes></dataVariable>
+</dataset>
+
+<!-- 12. OBSEA CUR DTO - 200m / 50 levels 1m -->
+<dataset type="EDDGridFromNcFiles" datasetID="obsea_local_cur_dto" active="false">
+    <reloadEveryNMinutes>1440</reloadEveryNMinutes>
+    <updateEveryNMillis>10000</updateEveryNMillis>
+    <fileDir>/datasets/unified_europe_cur/</fileDir>
+    <fileNameRegex>OBSEA_LOCAL_0KM_3D_cur_\d{6,8}(_\d{2})?\.nc</fileNameRegex>
+    <recursive>false</recursive>
+    <metadataFrom>last</metadataFrom>
+    <matchAxisNDigits>20</matchAxisNDigits>
+    <fileTableInMemory>false</fileTableInMemory>
+    <accessibleViaFiles>true</accessibleViaFiles>
+    <addAttributes>
+        <att name="title">OBSEA Digital Twin - Currents 3D (200m, 1m vertical, bathy-masked)</att>
+        <att name="institution">SARTI - DEGI4ECO Project</att>
+        <att name="infoUrl">https://sarti.upc.edu/degi4eco</att>
+        <att name="summary">Ultra-high resolution 3D Currents for OBSEA DTO. 200m horizontal, 50 levels at 1m resolution (1m-50m).</att>
+        <att name="cdm_data_type">Grid</att>
+        <att name="sourceUrl">(local files)</att>
+    </addAttributes>
+    <axisVariable><sourceName>time</sourceName><destinationName>time</destinationName><addAttributes/></axisVariable>
+    <axisVariable><sourceName>depth</sourceName><destinationName>depth</destinationName><addAttributes><att name="units">m</att></addAttributes></axisVariable>
+    <axisVariable><sourceName>lat</sourceName><destinationName>latitude</destinationName><addAttributes/></axisVariable>
+    <axisVariable><sourceName>lon</sourceName><destinationName>longitude</destinationName><addAttributes/></axisVariable>
+    <dataVariable><sourceName>uo</sourceName><destinationName>uo</destinationName><dataType>float</dataType><addAttributes><att name="units">m s-1</att><att name="colorBarPalette">KT_balance</att></addAttributes></dataVariable>
+    <dataVariable><sourceName>vo</sourceName><destinationName>vo</destinationName><dataType>float</dataType><addAttributes><att name="units">m s-1</att><att name="colorBarPalette">KT_balance</att></addAttributes></dataVariable>
+    <dataVariable><sourceName>speed</sourceName><destinationName>speed</destinationName><dataType>float</dataType><addAttributes><att name="units">m s-1</att><att name="colorBarPalette">KT_speed</att></addAttributes></dataVariable>
+    <dataVariable><sourceName>status_mask</sourceName><destinationName>status_mask</destinationName><dataType>byte</dataType><addAttributes><att name="flag_values" type="byteList">0 1 2</att><att name="flag_meanings">no_data native_cmems_3km extrapolated_to_coast</att></addAttributes></dataVariable>
 </dataset>
 
 </erddapDatasets>
+
