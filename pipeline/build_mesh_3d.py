@@ -86,6 +86,11 @@ def build_european_mesh_3d(var_name, config_dict, historical=False):
 
         if not historical:
             all_times = [all_times[-1]]
+        else:
+            import pandas as pd
+            t_start = pd.Timestamp("2026-04-01")
+            t_end = pd.Timestamp("2026-05-31T23:59:59")
+            all_times = [t for t in all_times if t_start <= pd.Timestamp(t) <= t_end]
         
         loaded_datasets = {}
         grouped = {k: list(v) for k, v in groupby(all_times, key=_get_month_str)}
@@ -233,9 +238,13 @@ def build_european_mesh_3d(var_name, config_dict, historical=False):
                     print(f"  Consolidating {len(daily_files)} daily files into monthly: {monthly_fn}")
                     try:
                         ds = xr.open_mfdataset(daily_files, combine='nested', concat_dim='time', chunks={})
+                        encoding_dict = {'time': {'units': 'days since 1970-01-01 00:00:00', 'calendar': 'standard'}}
+                        for var in ds.data_vars:
+                            encoding_dict[var] = {'zlib': True, 'complevel': 5}
                         ds.to_netcdf(
                             monthly_fn,
-                            encoding={'time': {'units': 'days since 1970-01-01 00:00:00', 'calendar': 'standard'}}
+                            encoding=encoding_dict,
+                            engine='netcdf4'
                         )
                         ds.close()
                         for p in daily_files:
@@ -251,7 +260,10 @@ def build_european_mesh_3d(var_name, config_dict, historical=False):
                         f"{prefix}_{res_label}KM_3D_{var_name}_{month_str}.nc"
                     )
                     print(f"  Saved: {output_fn}")
-                    monthly_ds.to_netcdf(output_fn, encoding={'time': {'units': 'days since 1970-01-01 00:00:00', 'calendar': 'standard'}})
+                    encoding_dict = {'time': {'units': 'days since 1970-01-01 00:00:00', 'calendar': 'standard'}}
+                    for var in monthly_ds.data_vars:
+                        encoding_dict[var] = {'zlib': True, 'complevel': 5}
+                    monthly_ds.to_netcdf(output_fn, encoding=encoding_dict, engine='netcdf4')
                     monthly_ds.close()
 
 

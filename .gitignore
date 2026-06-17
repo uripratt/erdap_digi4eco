@@ -12,6 +12,7 @@ __pycache__/
 env/
 venv/
 .venv/
+venv_digi4eco/
 pip-log.txt
 pip-delete-this-directory.txt
 .tox/
@@ -36,5 +37,35 @@ coverage.xml
 *.jpeg
 *.pdf
 project_synthesis.html
-# Keep the scientific workflow SVG as it's meant for the repo
+# Keep the scientific workflow SVGs as they're meant for the repo
 !workflow_scientific.svg
+!workflow_scientific_complete.svg
+!workflow_scientific_horizontal.svg
+
+# Logs, PIDs and runtime files
+*.log
+*.pid
+*.txt
+background_download.log
+run_all.log
+run_historical_2d.log
+resume_historical_2d.log
+check_erddap_output.txt
+check_times_output.txt
+
+# Large local-only data files
+catalogue.json
+albert_work_to_join/
+scratch/
+
+# Temporary test / patch scripts (local-only, not for production)
+test_*.py
+patch_*.py
+
+# Office/presentation files
+*.pptx
+*.docx
+*.xlsx
+
+# ERDDAP internal flag directory
+conf/flag/

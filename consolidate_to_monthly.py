@@ -4,11 +4,19 @@ import re
 import xarray as xr
 
 # Base directory setup
-base_dir = "/home/uripratt/Documents/SARTI/PROJECTS/DEGI4ECO/erddap/erddap_digi4models"
+base_dir = os.path.dirname(os.path.abspath(__file__))
 datasets_dir = os.path.join(base_dir, "datasets")
 
-# Find only the unified_europe_chl folder
-folders = [os.path.join(datasets_dir, "unified_europe_chl")]
+# Find all 2D variable folders
+folder_names = [
+    "unified_europe_chl",
+    "unified_europe_cur_surface",
+    "unified_europe_sal_surface",
+    "unified_europe_sst",
+    "unified_europe_temp_3d_surface",
+    "unified_europe_waves"
+]
+folders = [os.path.join(datasets_dir, f) for f in folder_names]
 
 print("Starting consolidation of daily NetCDF files into monthly files...")
 
@@ -55,7 +63,8 @@ for folder in folders:
             if has_depth:
                 chunk_dict['depth'] = 1
                 
-            ds = xr.open_mfdataset(paths, combine='nested', concat_dim='time', chunks=chunk_dict)
+            # Using combine='by_coords' is safer for preserving time dimensions from single-slice files
+            ds = xr.open_mfdataset(paths, combine='by_coords', chunks=chunk_dict)
             
             # Save the consolidated monthly file
             encoding_dict = {'time': {'units': 'days since 1970-01-01 00:00:00', 'calendar': 'standard'}}

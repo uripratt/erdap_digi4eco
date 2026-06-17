@@ -151,8 +151,9 @@ another.name@company.com, *@example.com</subscriptionEmailBlacklist>
     <axisVariable><sourceName>lon</sourceName><destinationName>longitude</destinationName><addAttributes/></axisVariable>
     <dataVariable>
         <sourceName>analysed_sst</sourceName><destinationName>sst</destinationName><dataType>float</dataType>
-        <addAttributes><att name="units">degree_Celsius</att><att name="colorBarMinimum" type="double">0.0</att><att name="colorBarMaximum" type="double">35.0</att><att name="colorBarPalette">KT_thermal</att></addAttributes>
+        <addAttributes><att name="add_offset" type="double">-273.15</att><att name="units">degree_Celsius</att><att name="colorBarMinimum" type="double">-2.0</att><att name="colorBarMaximum" type="double">32.0</att><att name="colorBarPalette">KT_thermal</att></addAttributes>
     </dataVariable>
+    <dataVariable><sourceName>prediction_flag</sourceName><destinationName>prediction_flag</destinationName><dataType>byte</dataType><addAttributes><att name="flag_values" type="byteList">0 1</att><att name="flag_meanings">historical_data future_prediction</att></addAttributes></dataVariable>
 </dataset>
 
 <!-- 2. CHL - 1km native OC -->
@@ -179,8 +180,9 @@ another.name@company.com, *@example.com</subscriptionEmailBlacklist>
     <axisVariable><sourceName>lon</sourceName><destinationName>longitude</destinationName><addAttributes/></axisVariable>
     <dataVariable>
         <sourceName>CHL</sourceName><destinationName>chl</destinationName><dataType>float</dataType>
-        <addAttributes><att name="units">mg m-3</att><att name="colorBarMinimum" type="double">0.0</att><att name="colorBarMaximum" type="double">10.0</att><att name="colorBarPalette">KT_algae</att></addAttributes>
+        <addAttributes><att name="units">mg m-3</att><att name="colorBarMinimum" type="double">0.0</att><att name="colorBarMaximum" type="double">15.0</att><att name="colorBarPalette">KT_algae</att></addAttributes>
     </dataVariable>
+    <dataVariable><sourceName>prediction_flag</sourceName><destinationName>prediction_flag</destinationName><dataType>byte</dataType><addAttributes><att name="flag_values" type="byteList">0 1</att><att name="flag_meanings">historical_data future_prediction</att></addAttributes></dataVariable>
 </dataset>
 
 <!-- 3. WAVES - 4km native MED WAV -->
@@ -205,13 +207,14 @@ another.name@company.com, *@example.com</subscriptionEmailBlacklist>
     <axisVariable><sourceName>time</sourceName><destinationName>time</destinationName><addAttributes/></axisVariable>
     <axisVariable><sourceName>lat</sourceName><destinationName>latitude</destinationName><addAttributes/></axisVariable>
     <axisVariable><sourceName>lon</sourceName><destinationName>longitude</destinationName><addAttributes/></axisVariable>
-    <dataVariable><sourceName>VHM0</sourceName><destinationName>wave_height</destinationName><dataType>float</dataType><addAttributes><att name="units">m</att><att name="colorBarPalette">KT_amp</att></addAttributes></dataVariable>
-    <dataVariable><sourceName>VMDR</sourceName><destinationName>wave_direction</destinationName><dataType>float</dataType><addAttributes><att name="units">degree</att><att name="colorBarPalette">KT_phase</att></addAttributes></dataVariable>
-    <dataVariable><sourceName>VTPK</sourceName><destinationName>wave_period</destinationName><dataType>float</dataType><addAttributes><att name="units">s</att><att name="colorBarPalette">KT_tempo</att></addAttributes></dataVariable>
+    <dataVariable><sourceName>VHM0</sourceName><destinationName>wave_height</destinationName><dataType>float</dataType><addAttributes><att name="units">m</att><att name="colorBarMinimum" type="double">0.0</att><att name="colorBarMaximum" type="double">6.0</att><att name="colorBarPalette">KT_amp</att></addAttributes></dataVariable>
+    <dataVariable><sourceName>VMDR</sourceName><destinationName>wave_direction</destinationName><dataType>float</dataType><addAttributes><att name="units">degree</att><att name="colorBarMinimum" type="double">0.0</att><att name="colorBarMaximum" type="double">360.0</att><att name="colorBarPalette">KT_phase</att></addAttributes></dataVariable>
+    <dataVariable><sourceName>VTPK</sourceName><destinationName>wave_period</destinationName><dataType>float</dataType><addAttributes><att name="units">s</att><att name="colorBarMinimum" type="double">0.0</att><att name="colorBarMaximum" type="double">15.0</att><att name="colorBarPalette">KT_tempo</att></addAttributes></dataVariable>
+    <dataVariable><sourceName>prediction_flag</sourceName><destinationName>prediction_flag</destinationName><dataType>byte</dataType><addAttributes><att name="flag_values" type="byteList">0 1</att><att name="flag_meanings">historical_data future_prediction</att></addAttributes></dataVariable>
 </dataset>
 
 <!-- 4. TEMP surface - 3km (IBI native, extracted from 3D) -->
-<dataset type="EDDGridFromNcFiles" datasetID="unified_europe_temp_surface" active="false">
+<dataset type="EDDGridFromNcFiles" datasetID="unified_europe_temp_surface" active="true">
     <reloadEveryNMinutes>1440</reloadEveryNMinutes>
     <updateEveryNMillis>10000</updateEveryNMillis>
     <fileDir>/datasets/unified_europe_temp_3d_surface/</fileDir>
@@ -232,11 +235,11 @@ another.name@company.com, *@example.com</subscriptionEmailBlacklist>
     <axisVariable><sourceName>time</sourceName><destinationName>time</destinationName><addAttributes/></axisVariable>
     <axisVariable><sourceName>lat</sourceName><destinationName>latitude</destinationName><addAttributes/></axisVariable>
     <axisVariable><sourceName>lon</sourceName><destinationName>longitude</destinationName><addAttributes/></axisVariable>
-    <dataVariable><sourceName>thetao</sourceName><destinationName>thetao</destinationName><dataType>float</dataType><addAttributes><att name="units">degree_Celsius</att><att name="colorBarPalette">KT_thermal</att></addAttributes></dataVariable>
+    <dataVariable><sourceName>thetao</sourceName><destinationName>thetao</destinationName><dataType>float</dataType><addAttributes><att name="units">degree_Celsius</att><att name="colorBarMinimum" type="double">-2.0</att><att name="colorBarMaximum" type="double">32.0</att><att name="colorBarPalette">KT_thermal</att></addAttributes></dataVariable>
 </dataset>
 
 <!-- 5. SAL surface - 3km (IBI native) -->
-<dataset type="EDDGridFromNcFiles" datasetID="unified_europe_sal_surface" active="false">
+<dataset type="EDDGridFromNcFiles" datasetID="unified_europe_sal_surface" active="true">
     <reloadEveryNMinutes>1440</reloadEveryNMinutes>
     <updateEveryNMillis>10000</updateEveryNMillis>
     <fileDir>/datasets/unified_europe_sal_surface/</fileDir>
@@ -257,11 +260,12 @@ another.name@company.com, *@example.com</subscriptionEmailBlacklist>
     <axisVariable><sourceName>time</sourceName><destinationName>time</destinationName><addAttributes/></axisVariable>
     <axisVariable><sourceName>lat</sourceName><destinationName>latitude</destinationName><addAttributes/></axisVariable>
     <axisVariable><sourceName>lon</sourceName><destinationName>longitude</destinationName><addAttributes/></axisVariable>
-    <dataVariable><sourceName>so</sourceName><destinationName>so</destinationName><dataType>float</dataType><addAttributes><att name="units">psu</att><att name="colorBarPalette">KT_haline</att></addAttributes></dataVariable>
+    <dataVariable><sourceName>so</sourceName><destinationName>so</destinationName><dataType>float</dataType><addAttributes><att name="units">psu</att><att name="colorBarMinimum" type="double">0.0</att><att name="colorBarMaximum" type="double">40.0</att><att name="colorBarPalette">KT_haline</att></addAttributes></dataVariable>
+    <dataVariable><sourceName>prediction_flag</sourceName><destinationName>prediction_flag</destinationName><dataType>byte</dataType><addAttributes><att name="flag_values" type="byteList">0 1</att><att name="flag_meanings">historical_data future_prediction</att></addAttributes></dataVariable>
 </dataset>
 
 <!-- 6. CUR surface - 3km (IBI native) -->
-<dataset type="EDDGridFromNcFiles" datasetID="unified_europe_cur_surface" active="false">
+<dataset type="EDDGridFromNcFiles" datasetID="unified_europe_cur_surface" active="true">
     <reloadEveryNMinutes>1440</reloadEveryNMinutes>
     <updateEveryNMillis>10000</updateEveryNMillis>
     <fileDir>/datasets/unified_europe_cur_surface/</fileDir>
@@ -282,9 +286,10 @@ another.name@company.com, *@example.com</subscriptionEmailBlacklist>
     <axisVariable><sourceName>time</sourceName><destinationName>time</destinationName><addAttributes/></axisVariable>
     <axisVariable><sourceName>lat</sourceName><destinationName>latitude</destinationName><addAttributes/></axisVariable>
     <axisVariable><sourceName>lon</sourceName><destinationName>longitude</destinationName><addAttributes/></axisVariable>
-    <dataVariable><sourceName>uo</sourceName><destinationName>uo</destinationName><dataType>float</dataType><addAttributes><att name="units">m s-1</att><att name="colorBarPalette">KT_balance</att></addAttributes></dataVariable>
-    <dataVariable><sourceName>vo</sourceName><destinationName>vo</destinationName><dataType>float</dataType><addAttributes><att name="units">m s-1</att><att name="colorBarPalette">KT_balance</att></addAttributes></dataVariable>
-    <dataVariable><sourceName>speed</sourceName><destinationName>speed</destinationName><dataType>float</dataType><addAttributes><att name="units">m s-1</att><att name="colorBarPalette">KT_speed</att></addAttributes></dataVariable>
+    <dataVariable><sourceName>uo</sourceName><destinationName>uo</destinationName><dataType>float</dataType><addAttributes><att name="units">m s-1</att><att name="colorBarMinimum" type="double">-2.0</att><att name="colorBarMaximum" type="double">2.0</att><att name="colorBarPalette">KT_balance</att></addAttributes></dataVariable>
+    <dataVariable><sourceName>vo</sourceName><destinationName>vo</destinationName><dataType>float</dataType><addAttributes><att name="units">m s-1</att><att name="colorBarMinimum" type="double">-2.0</att><att name="colorBarMaximum" type="double">2.0</att><att name="colorBarPalette">KT_balance</att></addAttributes></dataVariable>
+    <dataVariable><sourceName>speed</sourceName><destinationName>speed</destinationName><dataType>float</dataType><addAttributes><att name="units">m s-1</att><att name="colorBarMinimum" type="double">0.0</att><att name="colorBarMaximum" type="double">2.0</att><att name="colorBarPalette">KT_speed</att></addAttributes></dataVariable>
+    <dataVariable><sourceName>prediction_flag</sourceName><destinationName>prediction_flag</destinationName><dataType>byte</dataType><addAttributes><att name="flag_values" type="byteList">0 1</att><att name="flag_meanings">historical_data future_prediction</att></addAttributes></dataVariable>
 </dataset>
 
 <!-- ============================================================ -->

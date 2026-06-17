@@ -7,6 +7,14 @@ Resolution Strategy:
   - 3D Surface extraction (temp_3d, sal, cur): use res_surface (~IBI native ~3km)
   - 3D Europe volume: use res_europe_3d (5km, balance quality/performance)
   - 3D OBSEA DTO: use res (0.002° = 200m, upsampled from IBI 3km via hybrid interp)
+
+Mode Strategy:
+  - PIPELINE_CONFIG         : Daily (P1D) products — standard operational mode
+  - PIPELINE_CONFIG_HOURLY  : Hourly (PT1H) products — high-frequency mode
+    * SST: mixes satellite subskin L4 (MED/BAL/BS) with physical model 2D surface (ATL/GLO)
+           nc_vars is a dict-per-region to handle different variable names
+    * CHL: no hourly product exists → daily value repeated at each hour (forward-fill)
+    * Waves: hourly for regional seas, 3-hourly for GLO (no PT1H global wave product)
 """
 
 DOMAINS = {
@@ -105,5 +113,133 @@ PIPELINE_CONFIG = {
             "BS":  "cmems_mod_blk_phy-cur_anfc_2.5km_P1D-m",
             "GLO": "cmems_mod_glo_phy-cur_anfc_0.083deg_P1D-m"
         }
+    },
+}
+
+# ── OPCIÓN 2: CONFIGURACIÓN HORARIA (PT1H) ───────────────────────────────────
+# Dataset IDs verificados contra el catálogo CMEMS (copernicusmarine describe).
+# Las carpetas de salida se guardan bajo unified_europe_hourly_* para no colisionar
+# con los ficheros diarios del modo estándar.
+#
+# SST: nc_vars es un dict por región porque las fuentes son heterogéneas:
+#   - MED/BAL/BS  → satélite L4 subskin  → variable: sea_surface_subskin_temperature
+#   - ATL/GLO     → modelo físico 2D     → variable: thetao
+# CHL: no existe producto horario real. El valor diario se repite cada hora (forward-fill).
+# Waves GLO: sólo existe PT3H a escala global.
+
+PIPELINE_CONFIG_HOURLY = {
+
+    # ── 2D NATIVE PRODUCTS ─────────────────────────────────────────────────────
+
+    "sst": {
+        "res":     0.0625,   # ~6.25km — native subskin L4 product resolution
+        "is_3d":   False,
+        # nc_vars as dict-per-region (heterogeneous sources).
+        # VERIFIED against real downloads (2026-06-16):
+        #   MED, BS : L4 subskin satellite  → variable 'analysed_sst' (Kelvin)
+        #   ATL, GLO: IBI/GLO physical model → variable 'thetao' (degrees_C)
+        #   BAL     : subskin L4 outdated (last data 2026-06-02) → fallback to
+        #             Baltic physical model (cmems_mod_bal_phy_anfc_PT1H-i) → 'thetao'
+        "nc_vars": {
+            "MED": ["analysed_sst"],
+            "BS":  ["analysed_sst"],
+            "ATL": ["thetao"],
+            "BAL": ["thetao"],
+            "GLO": ["thetao"],
+        },
+        "nc_vars_default": ["analysed_sst"],
+        "priority": ["MED", "ATL", "BAL", "BS", "GLO"],
+        "products": {
+            "MED": "cmems_obs-sst_med_phy-sst_nrt_diurnal-oi-0.0625deg_PT1H-m",
+            "BS":  "cmems_obs-sst_blk_phy-sst_nrt_diurnal-oi-0.0625deg_PT1H-m",
+            "ATL": "cmems_mod_ibi_phy_anfc_0.027deg-2D_PT1H-m",
+            "BAL": "cmems_mod_bal_phy_anfc_PT1H-i",   # subskin L4 desactualizado → modelo físico
+            "GLO": "cmems_mod_glo_phy_anfc_0.083deg_PT1H-m",
+        },
+        "temporal_res": "PT1H",
+    },
+
+    "chl": {
+        "res":     0.01,
+        "is_3d":   False,
+        "nc_vars": ["CHL"],
+        "priority": ["MED", "ATL", "BS", "GLO"],
+        # Products are P1D (no true hourly CHL exists).
+        # build_mesh will forward-fill the daily value to produce hourly timesteps.
+        "products": {
+            "MED": "cmems_obs-oc_med_bgc-plankton_nrt_l4-gapfree-multi-1km_P1D",
+            "ATL": "cmems_obs-oc_atl_bgc-plankton_nrt_l4-gapfree-multi-1km_P1D",
+            "BS":  "cmems_obs-oc_blk_bgc-plankton_nrt_l4-gapfree-multi-1km_P1D",
+            "GLO": "cmems_obs-oc_glo_bgc-plankton_nrt_l4-gapfree-multi-4km_P1D",
+        },
+        "temporal_res": "PT1H",   # Output is hourly; source is P1D → forward-filled
+        "source_temporal_res": "P1D",  # Actual download cadence
+    },
+
+    "waves": {
+        "res":     0.04,
+        "is_3d":   False,
+        "nc_vars": ["VHM0", "VMDR", "VTPK"],
+        "priority": ["MED", "BAL", "BS", "GLO"],
+        "products": {
+            "MED": "cmems_mod_med_wav_anfc_4.2km_PT1H-i",
+            "BAL": "cmems_mod_bal_wav_anfc_PT1H-i",
+            "BS":  "cmems_mod_blk_wav_anfc_2.5km_PT1H-i",
+            "GLO": "cmems_mod_glo_wav_anfc_0.083deg_PT3H-i",  # No PT1H at global scale
+        },
+        "temporal_res": "PT1H",
+    },
+
+    # ── 3D PRODUCTS (Instantáneos Horarios PT1H) ──────────────────────────────
+
+    "temp_3d": {
+        "res":           0.002,
+        "res_surface":   0.027,
+        "res_europe_3d": 0.05,
+        "is_3d":   True,
+        "nc_vars": ["thetao"],
+        "priority": ["MED", "ATL", "BAL", "BS", "GLO"],
+        "products": {
+            "MED": "cmems_mod_med_phy-tem_anfc_4.2km-3D_PT1H-m",
+            "BAL": "cmems_mod_bal_phy_anfc_PT1H-i",
+            "ATL": "cmems_mod_ibi_phy_anfc_0.027deg-3D_PT1H-m",
+            "BS":  "cmems_mod_blk_phy-temp_anfc_2.5km_PT1H-m",
+            "GLO": "cmems_mod_glo_phy_anfc_0.083deg_PT1H-m",
+        },
+        "temporal_res": "PT1H",
+    },
+
+    "sal": {
+        "res":           0.002,
+        "res_surface":   0.027,
+        "res_europe_3d": 0.05,
+        "is_3d":   True,
+        "nc_vars": ["so"],
+        "priority": ["MED", "ATL", "BAL", "BS", "GLO"],
+        "products": {
+            "MED": "cmems_mod_med_phy-sal_anfc_4.2km-3D_PT1H-m",
+            "BAL": "cmems_mod_bal_phy_anfc_PT1H-i",
+            "ATL": "cmems_mod_ibi_phy_anfc_0.027deg-3D_PT1H-m",
+            "BS":  "cmems_mod_blk_phy-sal_anfc_2.5km_PT1H-m",
+            "GLO": "cmems_mod_glo_phy_anfc_0.083deg_PT1H-m",
+        },
+        "temporal_res": "PT1H",
+    },
+
+    "cur": {
+        "res":           0.002,
+        "res_surface":   0.027,
+        "res_europe_3d": 0.05,
+        "is_3d":   True,
+        "nc_vars": ["uo", "vo"],
+        "priority": ["MED", "ATL", "BAL", "BS", "GLO"],
+        "products": {
+            "MED": "cmems_mod_med_phy-cur_anfc_4.2km-3D_PT1H-m",
+            "BAL": "cmems_mod_bal_phy_anfc_PT1H-i",
+            "ATL": "cmems_mod_ibi_phy_anfc_0.027deg-3D_PT1H-m",
+            "BS":  "cmems_mod_blk_phy-cur_anfc_2.5km_PT1H-m",
+            "GLO": "cmems_mod_glo_phy_anfc_0.083deg_PT1H-m",
+        },
+        "temporal_res": "PT1H",
     },
 }
