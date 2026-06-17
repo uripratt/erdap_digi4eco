@@ -97,8 +97,9 @@ def plot_unified_maps(var_name, config_dict):
     # EUROPE PLOT
     _generate_map(latest, var_name, conf, "europe", plots_dir, time_str)
     
-    # LOCAL PLOTS (OBSEA, GALWAY)
-    for dom in ["OBSEA", "GALWAY"]:
+    # LOCAL PLOTS — only domains defined in config (e.g. OBSEA; GALWAY excluded)
+    local_domains = [d for d in ["OBSEA", "GALWAY"] if d in DOMAINS]
+    for dom in local_domains:
         try:
             bbox = DOMAINS[dom]
             # Load Bathymetry for this domain

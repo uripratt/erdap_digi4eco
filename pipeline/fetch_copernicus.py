@@ -76,10 +76,13 @@ def download_variable(var_name, config_dict, days_history=7, max_depth_local=300
     # source_temporal_res overrides the effective download cadence.
     source_res = conf.get("source_temporal_res", conf.get("temporal_res", "P1D"))
     
-    end_date = datetime.datetime.utcnow()
+    # NRT products (ATL, GLO, etc.) always lag 1 day behind.
+    # Using yesterday as end_date avoids "time dimension exceed" warnings
+    # and prevents unnecessary fallback attempts.
+    end_date = datetime.datetime.utcnow() - datetime.timedelta(days=1)
     start_date = end_date - datetime.timedelta(days=days_history)
-    start_date_str = start_date.strftime("%Y-%m-%d %H:%M:%S")
-    end_date_str = end_date.strftime("%Y-%m-%d %H:%M:%S")
+    start_date_str = start_date.strftime("%Y-%m-%d 00:00:00")
+    end_date_str = end_date.strftime("%Y-%m-%d 23:59:59")
 
     print(f"Downloading {var_name} data from {start_date_str} to {end_date_str} (source cadence: {source_res})")
 
