@@ -69,3 +69,6 @@ patch_*.py
 
 # ERDDAP internal flag directory
 conf/flag/
+
+# ERDDAP runtime data (logs, cache, internal state)
+erddapData/
