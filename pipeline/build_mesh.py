@@ -4,6 +4,7 @@ import glob
 import os
 import pandas as pd
 from itertools import groupby
+from pipeline.config import MY_CUTOFF
 
 
 def _get_month_str(t):
@@ -228,7 +229,14 @@ def build_european_mesh(var_name, config_dict, historical=False):
                     st_flag = xr.where(native_mask, 1, 0)
                     st_flag = xr.where((~native_mask) & ds_interp[main_var].notnull(), 2, st_flag)
                     ds_interp["status_mask"] = st_flag.astype(np.int8)
-                    ds_interp["prediction_flag"] = xr.zeros_like(st_flag, dtype=np.int8)
+
+                    # ── data_type: 0=MY validated, 1=NRT, 2=Prediction ────────
+                    ts = pd.Timestamp(target_time.astype('datetime64[s]').item())
+                    if not historical:
+                        dtype_val = np.int8(1)  # NRT mode
+                    else:
+                        dtype_val = np.int8(0) if ts < pd.Timestamp(MY_CUTOFF) else np.int8(1)
+                    ds_interp["data_type"] = xr.full_like(st_flag, dtype_val, dtype=np.int8)
 
                     # Reindex back to master grid
                     ds_interp = ds_interp.reindex(lat=master_lat, lon=master_lon)
@@ -243,8 +251,10 @@ def build_european_mesh(var_name, config_dict, historical=False):
                     empty_mosaic["status_mask"] = xr.DataArray(
                         0, coords=[master_lat, master_lon], dims=['lat', 'lon']
                     ).astype(np.int8)
-                    empty_mosaic["prediction_flag"] = xr.DataArray(
-                        0, coords=[master_lat, master_lon], dims=['lat', 'lon']
+                    ts_empty = pd.Timestamp(target_time.astype('datetime64[s]').item())
+                    dtype_empty = np.int8(0) if (historical and ts_empty < pd.Timestamp(MY_CUTOFF)) else np.int8(1)
+                    empty_mosaic["data_type"] = xr.DataArray(
+                        dtype_empty, coords=[master_lat, master_lon], dims=['lat', 'lon']
                     ).astype(np.int8)
                     processed_layers = [("__empty__", empty_mosaic)]
 

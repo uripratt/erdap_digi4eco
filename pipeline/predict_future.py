@@ -78,13 +78,16 @@ def generate_predictions(pipeline_config=None):
             # We expand the dims to include the new time array
             pred_ds = last_slice.expand_dims(time=future_times)
             
-            # Set prediction_flag to 1 (Prediction)
-            if 'prediction_flag' in pred_ds.data_vars:
-                pred_ds['prediction_flag'] = xr.ones_like(pred_ds['prediction_flag'])
+            # Set data_type=2 (Prediction) on all future slices
+            if 'data_type' in pred_ds.data_vars:
+                pred_ds['data_type'] = xr.full_like(pred_ds['data_type'], 2, dtype=np.int8)
+            elif 'prediction_flag' in pred_ds.data_vars:
+                # Legacy support: rename prediction_flag to data_type
+                pred_ds = pred_ds.rename({'prediction_flag': 'data_type'})
+                pred_ds['data_type'] = xr.full_like(pred_ds['data_type'], 2, dtype=np.int8)
             else:
-                # If not present in historical yet, create it
-                var_name = [v for v in pred_ds.data_vars if v not in ['status_mask', 'time', 'prediction_flag']][0]
-                pred_ds['prediction_flag'] = xr.ones_like(pred_ds[var_name], dtype=np.int8)
+                var_name = [v for v in pred_ds.data_vars if v not in ['status_mask', 'time', 'data_type', 'prediction_flag']][0]
+                pred_ds['data_type'] = xr.full_like(pred_ds[var_name], 2, dtype=np.int8)
                 
             # Save the prediction file
             # We use zPREDICTION so it sorts alphanumerically after the historical files if ERDDAP uses alphabetical sorting
