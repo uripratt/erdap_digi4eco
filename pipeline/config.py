@@ -152,22 +152,21 @@ PIPELINE_CONFIG_HOURLY = {
         # VERIFIED against real downloads (2026-06-16):
         #   MED, BS : L4 subskin satellite  → variable 'analysed_sst' (Kelvin)
         #   ATL, GLO: IBI/GLO physical model → variable 'thetao' (degrees_C)
-        #   BAL     : subskin L4 outdated (last data 2026-06-02) → fallback to
-        #             Baltic physical model (cmems_mod_bal_phy_anfc_PT1H-i) → 'thetao'
+        #   BAL     : REMOVED — cmems_mod_bal_phy_anfc_PT1H-i consistently hangs
+        #             on Copernicus servers; irrelevant for OBSEA (Mediterranean).
+        #             GLO provides fallback coverage for northern Europe.
         "nc_vars": {
             "MED": ["analysed_sst"],
             "BS":  ["analysed_sst"],
             "ATL": ["thetao"],
-            "BAL": ["thetao"],
             "GLO": ["thetao"],
         },
         "nc_vars_default": ["analysed_sst"],
-        "priority": ["MED", "ATL", "BAL", "BS", "GLO"],
+        "priority": ["MED", "ATL", "BS", "GLO"],
         "products": {
             "MED": "cmems_obs-sst_med_phy-sst_nrt_diurnal-oi-0.0625deg_PT1H-m",
             "BS":  "cmems_obs-sst_blk_phy-sst_nrt_diurnal-oi-0.0625deg_PT1H-m",
             "ATL": "cmems_mod_ibi_phy_anfc_0.027deg-2D_PT1H-m",
-            "BAL": "cmems_mod_bal_phy_anfc_PT1H-i",   # subskin L4 desactualizado → modelo físico
             "GLO": "cmems_mod_glo_phy_anfc_0.083deg_PT1H-m",
         },
         "temporal_res": "PT1H",
