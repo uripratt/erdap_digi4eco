@@ -10,33 +10,36 @@ import pipeline.fetch_copernicus as fc
 from pipeline.config import PIPELINE_CONFIG_HOURLY
 from pipeline.build_mesh import build_european_mesh
 
-# All 6 variables — using PIPELINE_CONFIG_HOURLY (PT1H).
-# Output goes to unified_europe_hourly_* folders (no conflict with existing daily files).
-VARS_TO_PROCESS = ["sst", "chl", "waves", "temp_3d", "sal", "cur"]
+# ── RESUME STATE ──────────────────────────────────────────────────────────────
+# SST 202604: DONE (mesh written)
+# CHL 202604: killed mid-download → restart from CHL
+# 202605: nothing done yet → all vars including SST
+# ─────────────────────────────────────────────────────────────────────────────
 
-# Download month by month to avoid Copernicus server timeouts.
-# Large PT1H requests (2 months at once) caused indefinite hang at 17%.
-MONTHS = [
-    ("2026-04-01 00:00:00", "2026-04-30 23:59:59", "202604"),
-    ("2026-05-01 00:00:00", "2026-05-31 23:59:59", "202605"),
+PHASES = [
+    # (start, end, label, vars_to_run)
+    ("2026-04-01 00:00:00", "2026-04-30 23:59:59", "202604",
+     ["chl", "waves", "temp_3d", "sal", "cur"]),   # SST Apr already done
+    ("2026-05-01 00:00:00", "2026-05-31 23:59:59", "202605",
+     ["sst", "chl", "waves", "temp_3d", "sal", "cur"]),  # all vars for May
 ]
 
 def fetch_and_build_april_may():
     original_execute = fc._execute_download
 
-    for start_str, end_str, month_label in MONTHS:
+    for start_str, end_str, month_label, vars_to_process in PHASES:
         print(f"\n{'#'*50}")
         print(f"# MONTH: {month_label}  ({start_str[:10]} → {end_str[:10]})")
+        print(f"# Variables: {vars_to_process}")
         print(f"{'#'*50}")
 
-        # Patch download function to force the current month's date range
         def mock_execute(product_id, out_dir, nc_vars, _s, _e, bbox, max_depth=None,
                          _start=start_str, _end=end_str):
             return original_execute(product_id, out_dir, nc_vars, _start, _end, bbox, max_depth)
 
         fc._execute_download = mock_execute
 
-        for v in VARS_TO_PROCESS:
+        for v in vars_to_process:
             print(f"\n{'='*50}\nProcessing Variable: {v}  [{month_label}]\n{'='*50}")
             print(f"Downloading {v} data...")
             fc.download_variable(v, PIPELINE_CONFIG_HOURLY, days_history=1)
@@ -44,7 +47,6 @@ def fetch_and_build_april_may():
             print(f"Building mesh for {v}...")
             build_european_mesh(v, PIPELINE_CONFIG_HOURLY, historical=True)
 
-        # Restore original after each month (safety)
         fc._execute_download = original_execute
 
 if __name__ == "__main__":
