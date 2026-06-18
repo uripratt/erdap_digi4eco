@@ -273,12 +273,18 @@ def build_european_mesh(var_name, config_dict, historical=False):
                 layers_normalised = []
                 for region_label, layer in processed_layers:
                     if is_heterogeneous:
-                        # Rename whatever temperature variable exists to the canonical name
+                        # Rename whatever source variable exists to the canonical name.
+                        # e.g.: thetao → analysed_sst,  sea_surface_subskin_temperature → analysed_sst
                         rename_map = {}
                         for v in list(layer.data_vars):
                             if v not in ("status_mask", "prediction_flag") and v != canonical_out_var:
                                 rename_map[v] = canonical_out_var
                         if rename_map:
+                            # If the canonical name already exists as another variable in the
+                            # same layer (e.g. GLO model ships both thetao AND analysed_sst),
+                            # drop the duplicate before renaming to avoid xarray conflict.
+                            if canonical_out_var in layer.data_vars:
+                                layer = layer.drop_vars(canonical_out_var)
                             layer = layer.rename(rename_map)
                     layers_normalised.append(layer)
 
