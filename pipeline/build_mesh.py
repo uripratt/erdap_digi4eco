@@ -273,19 +273,15 @@ def build_european_mesh(var_name, config_dict, historical=False):
                 layers_normalised = []
                 for region_label, layer in processed_layers:
                     if is_heterogeneous:
-                        # Rename whatever source variable exists to the canonical name.
-                        # e.g.: thetao → analysed_sst,  sea_surface_subskin_temperature → analysed_sst
-                        rename_map = {}
+                        # Normalise all non-auxiliary variables to the canonical name.
+                        # We use direct assignment instead of xarray.rename() to avoid
+                        # conflicts when the canonical name already exists as a data_var,
+                        # coordinate, OR dimension variable (rename() raises ValueError
+                        # in all those cases).
                         for v in list(layer.data_vars):
                             if v not in ("status_mask", "prediction_flag") and v != canonical_out_var:
-                                rename_map[v] = canonical_out_var
-                        if rename_map:
-                            # If the canonical name already exists as another variable in the
-                            # same layer (e.g. GLO model ships both thetao AND analysed_sst),
-                            # drop the duplicate before renaming to avoid xarray conflict.
-                            if canonical_out_var in layer.data_vars:
-                                layer = layer.drop_vars(canonical_out_var)
-                            layer = layer.rename(rename_map)
+                                layer[canonical_out_var] = layer[v]
+                                layer = layer.drop_vars(v)
                     layers_normalised.append(layer)
 
                 mosaic = layers_normalised[0]
