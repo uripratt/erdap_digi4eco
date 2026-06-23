@@ -35,7 +35,27 @@ def fetch_and_build_april_may():
 
         def mock_execute(product_id, out_dir, nc_vars, _s, _e, bbox, max_depth=None,
                          _start=start_str, _end=end_str):
-            return original_execute(product_id, out_dir, nc_vars, _start, _end, bbox, max_depth)
+            import pandas as pd
+            t_start = pd.Timestamp(_start)
+            t_end = pd.Timestamp(_end)
+            
+            current = t_start
+            while current <= t_end:
+                # 7-day chunks to prevent OOM in copernicusmarine
+                chunk_end = current + pd.Timedelta(days=6)
+                # Ensure we end exactly at 23:59:59 of the chunk_end day
+                chunk_end = chunk_end.replace(hour=23, minute=59, second=59)
+                
+                if chunk_end > t_end:
+                    chunk_end = t_end
+                
+                c_start_str = current.strftime("%Y-%m-%d %H:%M:%S")
+                c_end_str = chunk_end.strftime("%Y-%m-%d %H:%M:%S")
+                print(f"\n      >>> Downloading Sub-chunk: {c_start_str} to {c_end_str} <<<")
+                
+                original_execute(product_id, out_dir, nc_vars, c_start_str, c_end_str, bbox, max_depth)
+                
+                current = (chunk_end + pd.Timedelta(seconds=1)).normalize()
 
         fc._execute_download = mock_execute
 
