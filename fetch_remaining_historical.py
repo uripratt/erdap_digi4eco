@@ -63,7 +63,7 @@ def fetch_and_build_remaining():
     fc._execute_download = mock_execute
     
     # Variables to process (missing daily data for April and May)
-    vars_to_process = ["chl", "waves", "sal", "cur"]
+    vars_to_process = ["sst", "chl", "waves", "sal", "cur"]
     
     for v in vars_to_process:
         print(f"\n{'='*50}\nProcessing Variable: {v}\n{'='*50}")

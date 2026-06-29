@@ -135,8 +135,15 @@ def build_european_mesh(var_name, config_dict, historical=False):
     else:
         t_start = pd.Timestamp("2026-04-01")
         t_end = pd.Timestamp("2026-05-31T23:59:59")
-        all_times = [t for t in all_times if t_start <= pd.Timestamp(t) <= t_end]
-        print(f"Historical Mode: {len(all_times)} timesteps (filtered for Apr-May 2026)")
+        
+        expected_times = pd.date_range(start=t_start, end=t_end.normalize(), freq='1D').values
+        all_times_set = set(all_times)
+        for t in expected_times:
+            all_times_set.add(t)
+            
+        all_times = [t for t in all_times_set if t_start <= pd.Timestamp(t) <= t_end]
+        all_times = sorted(all_times)
+        print(f"Historical Mode: {len(all_times)} timesteps (filtered for Apr-May 2026, including empty dates)")
 
     region_priority = conf["priority"]
     grouped = {k: list(v) for k, v in groupby(all_times, key=_get_month_str)}
@@ -310,8 +317,8 @@ def build_european_mesh(var_name, config_dict, historical=False):
 
                 # ── Expand to hourly timesteps if CHL forward-fill ────────────
                 if chl_ffill and hour_range is not None:
-                    for h in hour_range:
-                        daily_mosaics_acc.append(mosaic.expand_dims(time=[h.to_datetime64()]))
+                    times = [h.to_datetime64() for h in hour_range]
+                    daily_mosaics_acc.append(mosaic.expand_dims(time=times))
                 else:
                     daily_mosaics_acc.append(mosaic.expand_dims(time=[target_time]))
 
