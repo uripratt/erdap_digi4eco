@@ -251,18 +251,22 @@ def build_european_mesh(var_name, config_dict, historical=False):
 
                 if not processed_layers:
                     empty_mosaic = xr.Dataset(coords={'lat': master_lat, 'lon': master_lon})
+                    empty_shape = (len(master_lat), len(master_lon))
                     for v in canonical_vars:
                         empty_mosaic[v] = xr.DataArray(
-                            np.nan, coords=[master_lat, master_lon], dims=['lat', 'lon'], name=v
+                            np.full(empty_shape, np.nan, dtype=np.float32), 
+                            coords=[master_lat, master_lon], dims=['lat', 'lon'], name=v
                         )
                     empty_mosaic["status_mask"] = xr.DataArray(
-                        0, coords=[master_lat, master_lon], dims=['lat', 'lon']
-                    ).astype(np.int8)
+                        np.zeros(empty_shape, dtype=np.int8), 
+                        coords=[master_lat, master_lon], dims=['lat', 'lon']
+                    )
                     ts_empty = pd.Timestamp(target_time.astype('datetime64[s]').item())
                     dtype_empty = np.int8(0) if (historical and ts_empty < pd.Timestamp(MY_CUTOFF)) else np.int8(1)
                     empty_mosaic["data_type"] = xr.DataArray(
-                        dtype_empty, coords=[master_lat, master_lon], dims=['lat', 'lon']
-                    ).astype(np.int8)
+                        np.full(empty_shape, dtype_empty, dtype=np.int8), 
+                        coords=[master_lat, master_lon], dims=['lat', 'lon']
+                    )
                     processed_layers = [("__empty__", empty_mosaic)]
 
                 # Merge layers by priority
