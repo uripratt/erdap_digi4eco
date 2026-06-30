@@ -173,7 +173,7 @@ PIPELINE_CONFIG_HOURLY = {
     },
 
     "chl": {
-        "res":     0.01,
+        "res":     0.04,  # Changed from 0.01 to 0.04 to prevent OOM when expanding to 24 hourly steps
         "is_3d":   False,
         "nc_vars": ["CHL"],
         "priority": ["MED", "ATL", "BS", "GLO"],
