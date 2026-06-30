@@ -133,8 +133,8 @@ def build_european_mesh(var_name, config_dict, historical=False):
         all_times = [all_times[-1]]
         print(f"NRT Mode: {np.datetime_as_string(all_times[0], unit='D')}")
     else:
-        t_start = pd.Timestamp("2026-04-01")
-        t_end = pd.Timestamp("2026-05-31T23:59:59")
+        t_start = pd.Timestamp(all_times[0]).normalize()
+        t_end = pd.Timestamp(all_times[-1]).normalize() + pd.Timedelta(hours=23, minutes=59, seconds=59)
         
         expected_times = pd.date_range(start=t_start, end=t_end.normalize(), freq='1D').values
         all_times_set = set(all_times)
@@ -143,7 +143,7 @@ def build_european_mesh(var_name, config_dict, historical=False):
             
         all_times = [t for t in all_times_set if t_start <= pd.Timestamp(t) <= t_end]
         all_times = sorted(all_times)
-        print(f"Historical Mode: {len(all_times)} timesteps (filtered for Apr-May 2026, including empty dates)")
+        print(f"Historical Mode: {len(all_times)} timesteps (dynamically filtered from {t_start.date()} to {t_end.date()}, including empty dates)")
 
     region_priority = conf["priority"]
     grouped = {k: list(v) for k, v in groupby(all_times, key=_get_month_str)}
