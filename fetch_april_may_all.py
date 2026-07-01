@@ -18,10 +18,18 @@ from pipeline.build_mesh import build_european_mesh
 
 PHASES = [
     # (start, end, label, vars_to_run)
+    # 1. Resume CHL from where it crashed (April 22nd to April 30th)
+    ("2026-04-22 00:00:00", "2026-04-30 23:59:59", "202604_CHL_resume",
+     ["chl"]),
+    # 2. Process the remaining variables for the whole month of April
     ("2026-04-01 00:00:00", "2026-04-30 23:59:59", "202604",
-     ["sst", "chl", "waves", "temp_3d", "sal", "cur"]),
+     ["waves", "temp_3d", "sal", "cur"]), 
+    # 3. Process all variables for May
     ("2026-05-01 00:00:00", "2026-05-31 23:59:59", "202605",
-     ["sst", "chl", "waves", "temp_3d", "sal", "cur"]),  # all vars for May
+     ["sst", "chl", "waves", "temp_3d", "sal", "cur"]),
+    # 4. Process all variables for June
+    ("2026-06-01 00:00:00", "2026-06-30 23:59:59", "202606",
+     ["sst", "chl", "waves", "temp_3d", "sal", "cur"]),
 ]
 
 def fetch_and_build_april_may():
@@ -41,8 +49,8 @@ def fetch_and_build_april_may():
             
             current = t_start
             while current <= t_end:
-                # 7-day chunks to prevent OOM in copernicusmarine
-                chunk_end = current + pd.Timedelta(days=6)
+                # 2-day chunks to prevent OOM in copernicusmarine
+                chunk_end = current + pd.Timedelta(days=1)
                 # Ensure we end exactly at 23:59:59 of the chunk_end day
                 chunk_end = chunk_end.replace(hour=23, minute=59, second=59)
                 
