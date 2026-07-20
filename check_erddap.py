@@ -3,28 +3,14 @@ import xarray as xr
 from bs4 import BeautifulSoup
 import pandas as pd
 
-import os
-
-mode = os.environ.get("PIPELINE_MODE", "daily")
-
-if mode == "hourly":
-    datasets = {
-        'Chlorophyll': 'unified_europe_hourly_chl',
-        'Sea Surface Currents': 'unified_europe_hourly_cur_surface',
-        'Sea Surface Salinity': 'unified_europe_hourly_sal_surface',
-        'SST': 'unified_europe_hourly_sst',
-        'Waves': 'unified_europe_hourly_waves',
-        'Temp 3D': 'unified_europe_hourly_temp_3d_surface'
-    }
-else:
-    datasets = {
-        'Chlorophyll': 'unified_europe_chl',
-        'Sea Surface Currents': 'unified_europe_cur_surface',
-        'Sea Surface Salinity': 'unified_europe_sal_surface',
-        'SST': 'unified_europe_sst',
-        'Waves': 'unified_europe_waves',
-        'Temp 3D': 'unified_europe_temp_3d_surface'
-    }
+datasets = {
+    'Chlorophyll': 'unified_europe_chl',
+    'Sea Surface Currents': 'unified_europe_cur_surface',
+    'Sea Surface Salinity': 'unified_europe_sal_surface',
+    'SST': 'unified_europe_sst',
+    'Waves': 'unified_europe_waves',
+    'Temp 3D': 'unified_europe_temp_3d_surface'
+}
 
 base_url = 'http://188.73.202.45:8080/erddap'
 
