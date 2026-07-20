@@ -66,7 +66,12 @@ def generate_predictions(pipeline_config=None):
             freq = "1h" if temporal_res.startswith("PT") else "1D"
             
             # Generate future time array
-            future_times = pd.date_range(start=last_time + pd.Timedelta(freq), end=end_of_next_month, freq=freq)
+            pred_end = end_of_next_month
+            if freq == "1h":
+                # For hourly mode, predicting months ahead causes OOM (~50GB RAM needed). Limit to 7 days.
+                pred_end = min(end_of_next_month, last_time + pd.Timedelta(days=7))
+                
+            future_times = pd.date_range(start=last_time + pd.Timedelta(freq), end=pred_end, freq=freq)
             
             if len(future_times) == 0:
                 print("  Data is already up to date with the prediction target.")
