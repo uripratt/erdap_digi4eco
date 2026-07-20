@@ -130,7 +130,6 @@ def build_european_mesh(var_name, config_dict, historical=False):
         return
 
     if not historical:
-        import numpy as np
         # NRT Mode: Only process the last 7 days of available data to prevent OOM
         cutoff_time = all_times[-1] - np.timedelta64(7, 'D')
         all_times = [t for t in all_times if t >= cutoff_time]

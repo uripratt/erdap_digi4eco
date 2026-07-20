@@ -85,7 +85,6 @@ def build_european_mesh_3d(var_name, config_dict, historical=False):
             continue
 
         if not historical:
-            import numpy as np
             cutoff_time = all_times[-1] - np.timedelta64(7, 'D')
             all_times = [t for t in all_times if t >= cutoff_time]
             print(f"  NRT Mode: processing last 7 days window up to {np.datetime_as_string(all_times[-1], unit='D')}")
