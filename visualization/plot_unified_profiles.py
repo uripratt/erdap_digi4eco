@@ -4,7 +4,7 @@ import os
 import numpy as np
 import glob
 
-def get_best_profile(da, lat, lon, target_depth=20, search_radius=0.05):
+def get_best_profile(da, lat, lon, target_depth=20, search_radius=0.05, target_idx=-1):
     """Searches for the nearest valid profile that reaches at least target_depth."""
     lats = da.lat.values
     lons = da.lon.values
@@ -13,7 +13,10 @@ def get_best_profile(da, lat, lon, target_depth=20, search_radius=0.05):
     candidates = []
     for i in lat_indices:
         for j in lon_indices:
-            p = da.isel(lat=i, lon=j, time=-1)
+            try:
+                p = da.isel(lat=i, lon=j, time=target_idx)
+            except IndexError:
+                p = da.isel(lat=i, lon=j, time=-1)
             mask = ~np.isnan(p.values)
             if np.any(mask):
                 current_max = np.max(p.depth.values[mask])
@@ -23,7 +26,11 @@ def get_best_profile(da, lat, lon, target_depth=20, search_radius=0.05):
     if candidates:
         candidates.sort(key=lambda x: x[0])
         return candidates[0][1]
-    return da.sel(lat=lat, lon=lon, method='nearest').isel(time=-1)
+    
+    try:
+        return da.sel(lat=lat, lon=lon, method='nearest').isel(time=target_idx)
+    except IndexError:
+        return da.sel(lat=lat, lon=lon, method='nearest').isel(time=-1)
 
 def plot_unified_profile(var_name, config_dict):
     scripts_dir = os.path.dirname(os.path.abspath(__file__))
@@ -83,7 +90,8 @@ def plot_unified_profile(var_name, config_dict):
         title_var = var_name.upper()
 
     print(f"  Extracting vertical profile for OBSEA...")
-    profile = get_best_profile(da, obsea_lat, obsea_lon, target_depth=20)
+    target_idx = -96 if is_hourly else -4
+    profile = get_best_profile(da, obsea_lat, obsea_lon, target_depth=20, target_idx=target_idx)
     
     depths = profile.depth.values
     vals = profile.values

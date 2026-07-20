@@ -75,12 +75,18 @@ def plot_unified_layers(var_name, config_dict):
         extent = [bbox[0], bbox[2], bbox[1], bbox[3]]
         
         fig, axes = plt.subplots(3, 3, figsize=(22, 18), constrained_layout=True)
-        axes = axes.flatten()
-        
-        time_str = np.datetime_as_string(ds.time.values[0], unit='D')
+        # In NRT, Copernicus is stuck on July 16th. Step back 96 hours.
+        try:
+            target_idx = -96 if is_hourly else -4
+            latest = ds.isel(time=target_idx)
+        except IndexError:
+            latest = ds.isel(time=-1)
+            
+        time_str = np.datetime_as_string(latest.time.values, unit='D')
         fig.suptitle(f"3D {title_var} Layers - {title_domain} - {time_str}", 
                      fontsize=26, fontweight='bold')
         
+        axes = axes.flatten()
         for i, idx in enumerate(layer_indices):
             print(f"  Plotting {title_var} layer index {idx} ({local_domain})...")
             
@@ -88,7 +94,9 @@ def plot_unified_layers(var_name, config_dict):
                 print(f"    Warning: Layer index {idx} out of bounds.")
                 continue
                 
-            ds_layer = da.isel(depth=idx, time=0)
+            # Get the data array from the latest timestep slice
+            da_latest = latest[da.name] if hasattr(da, 'name') and da.name else da.isel(time=target_idx)
+            ds_layer = da_latest.isel(depth=idx)
             actual_depth = ds_layer.depth.item()
                 
             im = ds_layer.plot(
