@@ -101,8 +101,16 @@ def plot_unified_maps(var_name, config_dict):
     latest_file = nc_files[-1]
     ds = xr.open_dataset(latest_file)
     if 'depth' in ds.dims: ds = ds.isel(depth=0)
-    latest = ds.isel(time=-1)
-    time_str = np.datetime_as_string(latest.time.values, unit='D')
+    
+    # In NRT, the absolute latest hours (-1) are often incomplete due to satellite latency.
+    # Step back 48 hours to show a fully consolidated map.
+    try:
+        target_idx = -48 if is_hourly else -2
+        latest = ds.isel(time=target_idx)
+    except IndexError:
+        latest = ds.isel(time=-1)
+        
+    time_str = np.datetime_as_string(latest.time.values, unit='h' if is_hourly else 'D')
     
     # EUROPE PLOT
     _generate_map(latest, var_name, conf, "europe", plots_dir, time_str)
