@@ -27,10 +27,10 @@ def plot_unified_layers(var_name, config_dict):
     
     for local_domain in ["OBSEA", "GALWAY", "EUROPE"]:
         if local_domain == "EUROPE":
-            nc_files = sorted(glob.glob(os.path.join(nc_dir, f"EUROPE_TOTAL_*_3D_*.nc")))
+            nc_files = [f for f in sorted(glob.glob(os.path.join(nc_dir, f"EUROPE_TOTAL_*_3D_*.nc"))) if "PREDICTION" not in f]
             title_domain = "Full Europe"
         else:
-            nc_files = sorted(glob.glob(os.path.join(nc_dir, f"{local_domain}_LOCAL_*.nc")))
+            nc_files = [f for f in sorted(glob.glob(os.path.join(nc_dir, f"{local_domain}_LOCAL_*.nc"))) if "PREDICTION" not in f]
             title_domain = f"{local_domain} DTO"
 
         if not nc_files:

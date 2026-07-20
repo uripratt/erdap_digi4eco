@@ -43,7 +43,7 @@ def plot_unified_profile(var_name, config_dict):
     is_hourly = config_dict[var_name].get("temporal_res") == "PT1H"
     dir_prefix = "unified_europe_hourly_" if is_hourly else "unified_europe_"
     nc_dir = os.path.join(base_dir, "datasets", f"{dir_prefix}{var_name}")
-    nc_files = sorted(glob.glob(os.path.join(nc_dir, "OBSEA_LOCAL_*.nc")))
+    nc_files = [f for f in sorted(glob.glob(os.path.join(nc_dir, "OBSEA_LOCAL_*.nc"))) if "PREDICTION" not in f]
 
     if not nc_files:
         print(f"No 3D NetCDF files found for {var_name} (OBSEA)")

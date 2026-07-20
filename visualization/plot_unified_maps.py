@@ -90,8 +90,12 @@ def plot_unified_maps(var_name, config_dict):
     conf = config_dict[var_name]
     is_hourly = conf.get("temporal_res") == "PT1H"
     dir_prefix = "unified_europe_hourly_" if is_hourly else "unified_europe_"
-    nc_dir = os.path.join(base_dir, "datasets", f"{dir_prefix}{var_name}")
-    nc_files = sorted(glob.glob(os.path.join(nc_dir, "*.nc")))
+    
+    # 3D variables output their 2D mesh to _surface directories
+    target_var = f"{var_name}_surface" if conf.get("is_3d", False) else var_name
+    nc_dir = os.path.join(base_dir, "datasets", f"{dir_prefix}{target_var}")
+    
+    nc_files = [f for f in sorted(glob.glob(os.path.join(nc_dir, "*.nc"))) if "PREDICTION" not in f]
     if not nc_files: return
 
     latest_file = nc_files[-1]
