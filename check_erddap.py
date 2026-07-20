@@ -9,7 +9,7 @@ datasets = {
     'Sea Surface Salinity': 'unified_europe_sal_surface',
     'SST': 'unified_europe_sst',
     'Waves': 'unified_europe_waves',
-    'Temp 3D': 'unified_europe_temp_3d_surface'
+    'Temp 3D': 'unified_europe_temp_surface'
 }
 
 base_url = 'http://188.73.202.45:8080/erddap'
