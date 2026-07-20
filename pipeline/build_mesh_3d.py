@@ -270,11 +270,9 @@ def build_european_mesh_3d(var_name, config_dict, historical=False):
                         output_dir,
                         f"{prefix}_{res_label}KM_3D_{var_name}_{month_str}.nc"
                     )
-                    import os
                     if os.path.exists(output_fn):
                         print(f"  Updating existing monthly file: {output_fn}")
                         try:
-                            import xarray as xr
                             old_ds = xr.open_dataset(output_fn)
                             monthly_ds = new_ds.combine_first(old_ds)
                             old_ds.close()
