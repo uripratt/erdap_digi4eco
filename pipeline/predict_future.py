@@ -11,7 +11,7 @@ if base_dir not in sys.path:
 
 from pipeline.config import PIPELINE_CONFIG, PIPELINE_CONFIG_HOURLY
 
-def generate_predictions(pipeline_config=None):
+def generate_predictions(pipeline_config=None, mode="daily"):
     if pipeline_config is None:
         pipeline_config = PIPELINE_CONFIG
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -31,7 +31,10 @@ def generate_predictions(pipeline_config=None):
     
     for var in variables:
         print(f"\n--- Processing variable: {var} ---")
-        folder = os.path.join(datasets_dir, f"unified_europe_{var}")
+        if mode == "hourly":
+            folder = os.path.join(datasets_dir, f"unified_europe_hourly_{var}")
+        else:
+            folder = os.path.join(datasets_dir, f"unified_europe_{var}")
         if not os.path.exists(folder):
             print(f"  Folder {folder} not found, skipping.")
             continue
@@ -123,4 +126,4 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
     active_config = PIPELINE_CONFIG_HOURLY if args.mode == "hourly" else PIPELINE_CONFIG
-    generate_predictions(active_config)
+    generate_predictions(active_config, mode=args.mode)
