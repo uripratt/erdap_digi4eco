@@ -102,10 +102,10 @@ def plot_unified_maps(var_name, config_dict):
     ds = xr.open_dataset(latest_file)
     if 'depth' in ds.dims: ds = ds.isel(depth=0)
     
-    # In NRT, the absolute latest hours (-1) are often incomplete due to satellite latency.
-    # Step back 48 hours to show a fully consolidated map.
+    # In NRT, Copernicus often has massive delays. Today their servers are stuck on July 16th.
+    # Step back 96 hours (4 days) to show a fully consolidated map with actual upstream data.
     try:
-        target_idx = -48 if is_hourly else -2
+        target_idx = -96 if is_hourly else -4
         latest = ds.isel(time=target_idx)
     except IndexError:
         latest = ds.isel(time=-1)
