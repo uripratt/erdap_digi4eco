@@ -36,16 +36,26 @@ fi
 cd "$BASE_DIR"
 
 echo ""
-echo ">>> STEP 1 & 2: Fetch Copernicus NRT Data & Build Meshes [mode=$MODE]"
-# The existing main.py or run_fetch_all.py typically handles the daily fetch
-# If run_fetch_all.py exists, we use it, otherwise we fall back to main.py
+echo ">>> STEP 1: Fetch Copernicus NRT Data [mode=$MODE]"
 if [ -f "run_fetch_all.py" ]; then
     python run_fetch_all.py --mode "$MODE"
 elif [ -f "main.py" ]; then
-    python main.py --mode "$MODE"
+    # Download datasets without building meshes
+    python main.py --mode "$MODE" --skip-mesh --skip-plot
 else
     echo "Error: Neither run_fetch_all.py nor main.py found."
 fi
+
+echo ""
+echo ">>> STEP 2: Build Meshes & Plots in Isolated Processes [mode=$MODE]"
+# By running each variable in a completely new python process, 
+# we force the OS to completely free RAM between variables.
+for var in sst chl waves temp_3d sal cur; do
+    echo "---------------------------------------------------------"
+    echo " Processing Variable: $var "
+    echo "---------------------------------------------------------"
+    python main.py --mode "$MODE" --vars $var --skip-download
+done
 
 echo ""
 echo ">>> STEP 3: Generate Future Predictions [mode=$MODE]"
