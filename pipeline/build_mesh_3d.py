@@ -275,7 +275,6 @@ def build_european_mesh_3d(var_name, config_dict, historical=False):
                             old_ds = xr.open_dataset(output_fn, chunks={'time': 24})
                             new_ds_chunked = new_ds.chunk({'time': 24})
                             monthly_ds = new_ds_chunked.combine_first(old_ds)
-                            old_ds.close()
                         except Exception as e:
                             print(f"  Warning: Could not open old file ({e}), overwriting.")
                             monthly_ds = new_ds
@@ -289,6 +288,8 @@ def build_european_mesh_3d(var_name, config_dict, historical=False):
                         encoding_dict[var] = {'zlib': True, 'complevel': 5}
                     monthly_ds.to_netcdf(temp_fn, encoding=encoding_dict, engine='netcdf4')
                     monthly_ds.close()
+                    if 'old_ds' in locals() and hasattr(old_ds, 'close'):
+                        old_ds.close()
                     os.rename(temp_fn, output_fn)
 
 
