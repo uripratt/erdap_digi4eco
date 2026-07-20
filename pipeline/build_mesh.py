@@ -290,7 +290,7 @@ def build_european_mesh(var_name, config_dict, historical=False):
                         # coordinate, OR dimension variable (rename() raises ValueError
                         # in all those cases).
                         for v in list(layer.data_vars):
-                            if v not in ("status_mask", "prediction_flag") and v != canonical_out_var:
+                            if v not in ("status_mask", "prediction_flag", "data_type") and v != canonical_out_var:
                                 layer[canonical_out_var] = layer[v]
                                 layer = layer.drop_vars(v)
                     layers_normalised.append(layer)

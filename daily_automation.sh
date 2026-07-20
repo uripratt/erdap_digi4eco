@@ -56,7 +56,17 @@ echo ">>> STEP 4: Consolidate Monthly NetCDF Files"
 python consolidate_to_monthly.py
 
 echo ""
+echo ">>> STEP 4.5: Sync files to ERDDAP Official Directory"
+# Copiamos las mallas recien generadas a la carpeta real de ERDDAP
+cp -r "$BASE_DIR/datasets/unified_europe_"* "/home/upc/erddap/datasets/"
+
+echo ""
 echo ">>> STEP 5: Trigger ERDDAP Reload"
+# Tocamos el archivo mágico que hace que ERDDAP recargue el catálogo entero
+touch /home/upc/erddap/conf/flag/datasets.xml
+echo "  Waiting 15 seconds for ERDDAP to process the new files..."
+sleep 15
+
 python check_erddap.py
 
 # echo ""
