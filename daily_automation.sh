@@ -17,8 +17,8 @@
 MODE="${PIPELINE_MODE:-daily}"
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-BASE_DIR="$(dirname "$SCRIPT_DIR")"
-VENV_PATH="$BASE_DIR/venv_digi4eco/bin/activate"
+BASE_DIR="$SCRIPT_DIR"
+VENV_PATH="$(dirname "$SCRIPT_DIR")/venv_digi4eco/bin/activate"
 
 echo "========================================================="
 echo "Starting Digi4ECO Daily Automation: $(date)"
