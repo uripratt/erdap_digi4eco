@@ -31,7 +31,11 @@ def _generate_map(data_slice, var_name, conf, domain_name, plots_dir, time_str, 
     elif var_name == 'waves':
         data_to_plot = data_slice["VHM0"]
     else:
-        da = data_slice[conf["nc_vars"][0]]
+        if isinstance(conf["nc_vars"], dict):
+            nc_var = conf.get("nc_vars_default", [list(conf["nc_vars"].values())[0][0]])[0]
+        else:
+            nc_var = conf["nc_vars"][0]
+        da = data_slice[nc_var]
         data_to_plot = da - 273.15 if da.max() > 100 else da
 
     # ------------------
