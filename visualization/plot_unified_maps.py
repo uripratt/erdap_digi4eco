@@ -102,13 +102,24 @@ def plot_unified_maps(var_name, config_dict):
     ds = xr.open_dataset(latest_file)
     if 'depth' in ds.dims: ds = ds.isel(depth=0)
     
-    # In NRT, Copernicus often has massive delays. Today their servers are stuck on July 16th.
-    # Step back 96 hours (4 days) to show a fully consolidated map with actual upstream data.
-    try:
-        target_idx = -96 if is_hourly else -4
-        latest = ds.isel(time=target_idx)
-    except IndexError:
+    # Find the most recent timestep that actually has data (bypassing NRT latency/outages)
+    latest = None
+    target_idx = -1
+    for i in range(1, len(ds.time) + 1):
+        try:
+            candidate = ds.isel(time=-i)
+            # Check if there is meaningful data (e.g., >1000 valid pixels)
+            main_var = conf["nc_vars_default"][0] if isinstance(conf["nc_vars"], dict) else conf["nc_vars"][0]
+            if int(candidate[main_var].notnull().sum()) > 1000:
+                latest = candidate
+                target_idx = -i
+                break
+        except Exception:
+            pass
+            
+    if latest is None:
         latest = ds.isel(time=-1)
+        target_idx = -1
         
     time_str = np.datetime_as_string(latest.time.values, unit='h' if is_hourly else 'D')
     

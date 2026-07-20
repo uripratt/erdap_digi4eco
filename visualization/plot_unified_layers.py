@@ -75,12 +75,24 @@ def plot_unified_layers(var_name, config_dict):
         extent = [bbox[0], bbox[2], bbox[1], bbox[3]]
         
         fig, axes = plt.subplots(3, 3, figsize=(22, 18), constrained_layout=True)
-        # In NRT, Copernicus is stuck on July 16th. Step back 96 hours.
-        try:
-            target_idx = -96 if is_hourly else -4
-            latest = ds.isel(time=target_idx)
-        except IndexError:
+        # Find the most recent timestep that actually has data
+        latest = None
+        target_idx = -1
+        for i in range(1, len(ds.time) + 1):
+            try:
+                candidate = ds.isel(time=-i)
+                # Check if there is meaningful data at surface
+                main_var = conf["nc_vars"][0]
+                if int(candidate[main_var].isel(depth=0).notnull().sum()) > 500:
+                    latest = candidate
+                    target_idx = -i
+                    break
+            except Exception:
+                pass
+                
+        if latest is None:
             latest = ds.isel(time=-1)
+            target_idx = -1
             
         time_str = np.datetime_as_string(latest.time.values, unit='D')
         fig.suptitle(f"3D {title_var} Layers - {title_domain} - {time_str}", 

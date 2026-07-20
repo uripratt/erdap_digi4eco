@@ -90,7 +90,19 @@ def plot_unified_profile(var_name, config_dict):
         title_var = var_name.upper()
 
     print(f"  Extracting vertical profile for OBSEA...")
-    target_idx = -96 if is_hourly else -4
+    
+    # Find the most recent timestep that actually has data
+    target_idx = -1
+    for i in range(1, len(ds.time) + 1):
+        try:
+            candidate = ds.isel(time=-i)
+            main_var = conf["nc_vars"][0]
+            if int(candidate[main_var].isel(depth=0).notnull().sum()) > 10:
+                target_idx = -i
+                break
+        except Exception:
+            pass
+
     profile = get_best_profile(da, obsea_lat, obsea_lon, target_depth=20, target_idx=target_idx)
     
     depths = profile.depth.values
