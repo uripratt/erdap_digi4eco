@@ -130,7 +130,11 @@ def build_european_mesh(var_name, config_dict, historical=False):
         return
 
     if not historical:
-        print(f"NRT Mode: processing last window up to {np.datetime_as_string(all_times[-1], unit='D')}")
+        import numpy as np
+        # NRT Mode: Only process the last 7 days of available data to prevent OOM
+        cutoff_time = all_times[-1] - np.timedelta64(7, 'D')
+        all_times = [t for t in all_times if t >= cutoff_time]
+        print(f"NRT Mode: processing last 7 days window up to {np.datetime_as_string(all_times[-1], unit='D')}")
     else:
         t_start = pd.Timestamp(all_times[0]).normalize()
         t_end = pd.Timestamp(all_times[-1]).normalize() + pd.Timedelta(hours=23, minutes=59, seconds=59)
