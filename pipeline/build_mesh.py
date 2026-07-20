@@ -381,18 +381,34 @@ def build_european_mesh(var_name, config_dict, historical=False):
                     print(f"  [ERROR] Failed to consolidate month {month_str}: {e}")
         else:
             if daily_mosaics:
-                monthly_ds = xr.concat(daily_mosaics, dim='time')
+                new_ds = xr.concat(daily_mosaics, dim='time')
                 output_fn = os.path.join(
                     output_dir,
                     f"EUROPE_TOTAL_{res_label}KM_{temporal_res}_{output_var_name}_{month_str}.nc"
                 )
-                print(f"  Writing: {output_fn}")
+                import os
+                if os.path.exists(output_fn):
+                    print(f"  Updating existing monthly file: {output_fn}")
+                    try:
+                        import xarray as xr
+                        old_ds = xr.open_dataset(output_fn)
+                        monthly_ds = new_ds.combine_first(old_ds)
+                        old_ds.close()
+                    except Exception as e:
+                        print(f"  Warning: Could not open old file ({e}), overwriting.")
+                        monthly_ds = new_ds
+                else:
+                    print(f"  Writing new monthly file: {output_fn}")
+                    monthly_ds = new_ds
+                
+                temp_fn = output_fn + ".tmp"
                 time_units = 'hours since 1970-01-01 00:00:00' if is_hourly else 'days since 1970-01-01 00:00:00'
                 encoding_dict = {'time': {'units': time_units, 'calendar': 'standard'}}
                 for var in monthly_ds.data_vars:
                     encoding_dict[var] = {'zlib': True, 'complevel': 5}
-                monthly_ds.to_netcdf(output_fn, encoding=encoding_dict, engine='netcdf4')
+                monthly_ds.to_netcdf(temp_fn, encoding=encoding_dict, engine='netcdf4')
                 monthly_ds.close()
+                os.rename(temp_fn, output_fn)
 
 
 if __name__ == "__main__":
