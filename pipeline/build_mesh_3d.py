@@ -272,8 +272,9 @@ def build_european_mesh_3d(var_name, config_dict, historical=False):
                     if os.path.exists(output_fn):
                         print(f"  Updating existing monthly file: {output_fn}")
                         try:
-                            old_ds = xr.open_dataset(output_fn)
-                            monthly_ds = new_ds.combine_first(old_ds)
+                            old_ds = xr.open_dataset(output_fn, chunks={'time': 24})
+                            new_ds_chunked = new_ds.chunk({'time': 24})
+                            monthly_ds = new_ds_chunked.combine_first(old_ds)
                             old_ds.close()
                         except Exception as e:
                             print(f"  Warning: Could not open old file ({e}), overwriting.")
