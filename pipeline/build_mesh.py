@@ -130,8 +130,7 @@ def build_european_mesh(var_name, config_dict, historical=False):
         return
 
     if not historical:
-        all_times = [all_times[-1]]
-        print(f"NRT Mode: {np.datetime_as_string(all_times[0], unit='D')}")
+        print(f"NRT Mode: processing last window up to {np.datetime_as_string(all_times[-1], unit='D')}")
     else:
         t_start = pd.Timestamp(all_times[0]).normalize()
         t_end = pd.Timestamp(all_times[-1]).normalize() + pd.Timedelta(hours=23, minutes=59, seconds=59)
