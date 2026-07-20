@@ -84,7 +84,9 @@ def plot_unified_maps(var_name, config_dict):
     os.makedirs(plots_dir, exist_ok=True)
 
     conf = config_dict[var_name]
-    nc_dir = os.path.join(base_dir, "datasets", f"unified_europe_{var_name}")
+    is_hourly = conf.get("temporal_res") == "PT1H"
+    dir_prefix = "unified_europe_hourly_" if is_hourly else "unified_europe_"
+    nc_dir = os.path.join(base_dir, "datasets", f"{dir_prefix}{var_name}")
     nc_files = sorted(glob.glob(os.path.join(nc_dir, "*.nc")))
     if not nc_files: return
 

@@ -21,7 +21,9 @@ def plot_unified_layers(var_name, config_dict):
         return
 
     from pipeline.config import DOMAINS
-    nc_dir = os.path.join(base_dir, "datasets", f"unified_europe_{var_name}")
+    is_hourly = config_dict[var_name].get("temporal_res") == "PT1H"
+    dir_prefix = "unified_europe_hourly_" if is_hourly else "unified_europe_"
+    nc_dir = os.path.join(base_dir, "datasets", f"{dir_prefix}{var_name}")
     
     for local_domain in ["OBSEA", "GALWAY", "EUROPE"]:
         if local_domain == "EUROPE":

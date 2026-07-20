@@ -40,7 +40,9 @@ def plot_unified_profile(var_name, config_dict):
         print(f"Variable '{var_name}' is not 3D. Skipping profile.")
         return
 
-    nc_dir = os.path.join(base_dir, "datasets", f"unified_europe_{var_name}")
+    is_hourly = config_dict[var_name].get("temporal_res") == "PT1H"
+    dir_prefix = "unified_europe_hourly_" if is_hourly else "unified_europe_"
+    nc_dir = os.path.join(base_dir, "datasets", f"{dir_prefix}{var_name}")
     nc_files = sorted(glob.glob(os.path.join(nc_dir, "OBSEA_LOCAL_*.nc")))
 
     if not nc_files:
